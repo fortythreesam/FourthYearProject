@@ -41,7 +41,6 @@ for cha=1:size(img,3)
 	    XtrX = sortrows(XtrX')';
 	    p = floor(size(XtrX,2)/(decim+1));
 	    p = [1:p] * (decim+1);
-        fprintf(p)
 	    Xtr = XtrX(1,p);
 	    X = XtrX(2:size(XtrX,1),p);
 	end

@@ -29,7 +29,6 @@ for cha=1:s(3)
 			end
 			ind = ind + 1;
 		end
-	end
-	
+    end
 end
 end
