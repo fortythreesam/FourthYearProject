@@ -17,7 +17,7 @@ def root_mean_squared_error(im1, im2):
 """
 Peak Signal to Noise Ratio
 """
-def peak_signal_noise_ration(im1, im2):
+def peak_signal_noise_ratio(im1, im2):
     return compare_psnr(im1,im2)
 
 """
