@@ -17,7 +17,7 @@ $$\pagebreak$$
       1. Image Noise
       2. Weak Texture Patches
    2. Evolutionary Algorithms
-   3. Evaluation Methods
+   3. Evaluation Metrics
 3. Design
 4. Implementation
 5. Evaluation
@@ -61,11 +61,11 @@ $$\pagebreak$$
 
 #### 1.1.1 Image Noise
 
-Noise is present in an image when there is a random variance in its pixel values. Image denoising is an important step in any image processing application. Fields such as computer vision rely on having high-quality images in order to work as efficiently as possible. Digital cameras are also required to output images that closely represent the real world. It is therefore essential that as much of the process of this is as efficient as possible. The presence of noise in an image can cause problems for both perceived quality and effectiveness of algorithms using the image. 
+Noise is present in an image when there is a random variance in its pixel values. Image denoising is an important step in any image processing application. Fields such as computer vision rely on having high-quality images in order to work as efficiently as possible. Rafati, Mehravar, et al.[1] haveshown how sensitive such systems can be to even low levels of noise. Digital cameras are also required to output images that closely represent the real world. It is therefore essential that as much of the process of this is as efficient as possible. The presence of noise in an image can cause problems for both perceived quality and effectiveness of algorithms using the image. 
 
 #### 1.1.2 Evolutionary Algorithm
 
-One problem with using denoising filters is the fact that input parameters are required to be selected manually. For example, a Gaussian filter requires an estimated noise level and Chambolles total variation filter requires a weight parameter[1]. Since there are many of these filters, it can take a long time to find the optimal one to use. The idea is to use an evolutionary algorithm to automatically select the filter and parameter(s).
+One problem with using denoising filters is the fact that input parameters are required to be selected manually. For example, a Gaussian filter requires an estimated noise level and Chambolles total variation filter requires a weight parameter[2]. Since there are many of these filters, it can take a long time to find the optimal one to use. The idea is to use an evolutionary algorithm to automatically select the filter and parameter(s).
 
 #### 1.1.3 Weak Texture Patches
 
@@ -73,7 +73,7 @@ Another problem faced in denoising images is the presence of naturally noisy are
 
 ### 1.2 Goals
 
-The main goal of this project is to explore the effectiveness of automatically selecting a denoising filter and parameter. A secondary aim is to see if applying the filter separately to the weak and rich texture patches will have an effect on the outcome. The root mean squared error(RMSE), peak signal to noise ratio(PSNR), image quality index(IQI) and structural similarity index metric(SSIM) are used to evaluate the selected filters[2]. The student aims to achieve better metrics then applying a single filter over the entire image. As a side goal, the student aims to learn more in the fields of image processing, linear algebra, and evolutionary algorithms.
+The main goal of this project is to explore the effectiveness of automatically selecting a denoising filter and parameter. A secondary aim is to see if applying the filter separately to the weak and rich texture patches will have an effect on the outcome. The root mean squared error(RMSE), peak signal to noise ratio(PSNR), image quality index(IQI) and structural similarity index metric(SSIM) are used to evaluate the selected filters[3]. The student aims to achieve better metrics then applying a single filter over the entire image. As a side goal, the student aims to learn more in the fields of image processing, linear algebra, and evolutionary algorithms.
 
 ### 1.3 Project Overview
 
@@ -81,8 +81,10 @@ Initially, the project takes in an image and applies a layer of additive white G
 
 ### 1.4 Achievements
 ___
+
 $$\pagebreak$$
 ___
+
 ## Chapter 2
 
 ## Analysis
@@ -97,35 +99,44 @@ There are many ways to represent images in memory. The standard way to represent
 
 Since storage space limits the ability to store large images due to the increasing space required by higher resolutions, a number of steps are taken to compress the data. One step is to apply colour quantisation to the image to reduce the range of values being stored. Quantisation is the process of estimating a range of values into a discrete value. This can reduce the amount of data stored but retain the same visual quality. A problem with this is it adds errors in the values to the image known as noise. Depending on the level of quantisation, the noise can be more or less noticeable.
 
-This project will focus on additive white Gaussian noise. The main source of this type of noise is during the aquisition stage of the image due to faults in the sensor e.g. the sensors temperature is too high. We can model this type of noise as $X = Y + N$ where $X$ is the noisy image, $Y$ is the pure image and $N$ is the layer of additive white gaussian noise. There a various methods already available to reduce this type of noise. Listed here are a few filter types:
+This project will focus on additive white Gaussian noise. The main source of this type of noise is during the aquisition stage of the image due to faults in the sensor e.g. the sensors temperature is too high. A standard model for this type of noise is $X = Y + N$ where $X$ is the noisy image, $Y$ is the pure image and $N$ is the layer of additive white gaussian noise. There a various methods already available to reduce this type of noise. Listed here are a few filter types:
 
 #### 2.1.2.1 Median Filter
 
-Assigns the median value to the pixel of it and it's neighbours. It requires no input parameters to work. [2]
+Assigns the median value to the pixel of it and it's neighbours. It requires no input parameters to work. [3]
 
 #### 2.1.2.2 Gaussian Filter
 
-A gaussian filter blurs an image causing a reduction in noise and detail. This is achievd by convolving the image using a gaussian function. The standard deviation of the noise is required.
+A gaussian filter blurs an image causing a reduction in noise and detail. This is achieved by convolving the image using a gaussian function. The standard deviation of the noise is required.
 
 #### 2.1.2.3 Chambolle's Total Variation Filter 
 
-Attempts to reduce the total variance in the image based on a given weight parameter. [1]
+Attempts to reduce the total variance in the image based on a given weight parameter.[2] A higher weight reduces noise further but also reduces the level of detail.
 
 #### 2.1.2.4 Weiner Filter
 
-Estimates the desired target image by applying a linear time-invarient filter to the signal. Similar to the Gaussian filter, it requires a noise level estimation.
+Estimates the desired target image by applying a linear time-invarient filter to the signal. Similar to the Gaussian filter, it requires a noise level estimation.[3]
 
 ### 2.1.3 Weak Texture Patches
 
+A weakly textured patch in an image is found where a cluster of pixels contains similar values to each other. Examples of this in natural images would be a wall or a clear sky. These patches are useful in noise estimation as it's easy to detect a disturbance. The main issue with this is the difficulty of detecting weak texture patches in noisy images as the noise variance causes pixel values to vary more.
+
+Liu, Xinhao, et al.[4] propose a method to estimate noise levels of additive white Gaussian noise by analysing weak texture patches in an image. They also show a method for generating a mask of the weak texture patches in an image. The method they propose analyses statistics from the gradient covariance matrix of each patch. The process looks for what is expected in a weak texture patch after a layer of noise has affected the image. It then estimates a threshold such that a patch is weakly textured if the maximum eigenvalue of it's gradient covariance matrix falls below the threshold. This gives a matrix, with the same shape as the image, where there is a one at each position if that pixel is part of a weakly textured patch. The rest of the matrix contains zeros indicating the pixels that are part of richly textured patches. 
+
+### 2.2 Evolutionary Algorithms
 
 
-### 1.2 Evolutionary Algorithms
 
+### 2.3 Evaluation Metrics
 
 
 
 ## References
 
-[1] Duran, Joan & Coll, Bartomeu & Sbert, Catalina. (2013). Chambolle's Projection Algorithm for Total Variation Denoising. Image Processing On Line. 3. 301-321. 10.5201/ipol.2013.61.     
+[1]  Hossein Hosseini, Baicen Xiao, and Radha Poovendran.  Google’scloud  vision  api  is  not  robust  to  noise.   InMachine  Learning  andApplications  (ICMLA),  2017  16th  IEEE  International  Conference  on,pages 101–105. IEEE, 2017
 
-[2] Rafati, Mehravar, et al. “Fuzzy Genetic-Based Noise Removal Filter for Digital Panoramic X-Ray Images.” Biocybernetics and Biomedical Engineering, vol. 38, no. 4, 2018, pp. 941–965., doi:10.1016/j.bbe.2018.08.005.
+[2] Duran, Joan & Coll, Bartomeu & Sbert, Catalina. (2013). Chambolle's Projection Algorithm for Total Variation Denoising. Image Processing On Line. 3. 301-321. 10.5201/ipol.2013.61.     
+
+[3] Rafati, Mehravar, et al. “Fuzzy Genetic-Based Noise Removal Filter for Digital Panoramic X-Ray Images.” Biocybernetics and Biomedical Engineering, vol. 38, no. 4, 2018, pp. 941–965., doi:10.1016/j.bbe.2018.08.005.
+
+[4] Liu, Xinhao, et al. “Single-Image Noise Level Estimation for Blind Denoising.” IEEE Transactions on Image Processing, vol. 22, no. 12, 2013, pp. 5226–5237., doi:10.1109/tip.2013.2283400.
