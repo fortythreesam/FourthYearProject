@@ -73,7 +73,7 @@ Another problem faced in denoising images is the presence of naturally noisy are
 
 ### 1.2 Goals
 
-The main goal of this project is to explore the effectiveness of automatically selecting a denoising filter and parameter. A secondary aim is to see if applying the filter separately to the weak and rich texture patches will have an effect on the outcome. The root mean squared error(RMSE), peak signal to noise ratio(PSNR), image quality index(IQI) and structural similarity index metric(SSIM) are used to evaluate the selected filters. The student aims to achieve better metrics then applying a single filter over the entire image. As a side goal, the student aims to learn more in the fields of image processing, linear algebra, and evolutionary algorithms.
+The main goal of this project is to explore the effectiveness of automatically selecting a denoising filter and parameter. A secondary aim is to see if applying the filter separately to the weak and rich texture patches will have an effect on the outcome. The root mean squared error(RMSE), peak signal to noise ratio(PSNR), image quality index(IQI) and structural similarity index metric(SSIM) are used to evaluate the selected filters[2]. The student aims to achieve better metrics then applying a single filter over the entire image. As a side goal, the student aims to learn more in the fields of image processing, linear algebra, and evolutionary algorithms.
 
 ### 1.3 Project Overview
 
@@ -89,13 +89,33 @@ ___
 
 ### 2.1 Image Processing
 
+### 2.1.1 Images in Computers
 
+There are many ways to represent images in memory. The standard way to represent natural pictures is as a raster image. A raster image is a rectangular matrix that can vary in depth. Each position in the matrix represents that locations colour/greyscale value. In this project, images are stored in a matrix with a depth of 3 with each channel representing red, blue, and green respectively. Each position in the matrix is called a pixel. This is an additive colour model as equal amounts of each will give us white.
 
-### 2.1.1 Image Denoising
+### 2.1.2 Image Noise/Denoising
 
+Since storage space limits the ability to store large images due to the increasing space required by higher resolutions, a number of steps are taken to compress the data. One step is to apply colour quantisation to the image to reduce the range of values being stored. Quantisation is the process of estimating a range of values into a discrete value. This can reduce the amount of data stored but retain the same visual quality. A problem with this is it adds errors in the values to the image known as noise. Depending on the level of quantisation, the noise can be more or less noticeable.
 
+This project will focus on additive white Gaussian noise. The main source of this type of noise is during the aquisition stage of the image due to faults in the sensor e.g. the sensors temperature is too high. We can model this type of noise as $X = Y + N$ where $X$ is the noisy image, $Y$ is the pure image and $N$ is the layer of additive white gaussian noise. There a various methods already available to reduce this type of noise. Listed here are a few filter types:
 
-### 2.1.2 Weak Texture Patches
+#### 2.1.2.1 Median Filter
+
+Assigns the median value to the pixel of it and it's neighbours. It requires no input parameters to work. [2]
+
+#### 2.1.2.2 Gaussian Filter
+
+A gaussian filter blurs an image causing a reduction in noise and detail. This is achievd by convolving the image using a gaussian function. The standard deviation of the noise is required.
+
+#### 2.1.2.3 Chambolle's Total Variation Filter 
+
+Attempts to reduce the total variance in the image based on a given weight parameter. [1]
+
+#### 2.1.2.4 Weiner Filter
+
+Estimates the desired target image by applying a linear time-invarient filter to the signal. Similar to the Gaussian filter, it requires a noise level estimation.
+
+### 2.1.3 Weak Texture Patches
 
 
 
@@ -107,3 +127,5 @@ ___
 ## References
 
 [1] Duran, Joan & Coll, Bartomeu & Sbert, Catalina. (2013). Chambolle's Projection Algorithm for Total Variation Denoising. Image Processing On Line. 3. 301-321. 10.5201/ipol.2013.61.     
+
+[2] Rafati, Mehravar, et al. “Fuzzy Genetic-Based Noise Removal Filter for Digital Panoramic X-Ray Images.” Biocybernetics and Biomedical Engineering, vol. 38, no. 4, 2018, pp. 941–965., doi:10.1016/j.bbe.2018.08.005.
