@@ -73,7 +73,7 @@ Another problem faced in denoising images is the presence of naturally noisy are
 
 ### 1.2 Goals
 
-The main goal of this project is to explore the effectiveness of automatically selecting a denoising filter and parameter. A secondary aim is to see if applying the filter separately to the weak and rich texture patches will have an effect on the outcome. The root mean squared error(RMSE), peak signal to noise ratio(PSNR), image quality index(IQI) and structural similarity index metric(SSIM) are used to evaluate the selected filters[3]. The student aims to achieve better metrics then applying a single filter over the entire image. As a side goal, the student aims to learn more in the fields of image processing, linear algebra, and evolutionary algorithms.
+The main goal of this project is to explore the effectiveness of automatically selecting a denoising filter and parameter. A secondary aim is to see if applying the filter separately to the weak and rich texture patches will have an effect on the outcome. The root mean squared error(RMSE), peak signal to noise ratio(PSNR), image quality index(IQI)[3] and structural similarity index metric(SSIM) are used to evaluate the selected filters[4]. The student aims to achieve better metrics then applying a single filter over the entire image. As a side goal, the student aims to learn more in the fields of image processing, linear algebra, and evolutionary algorithms.
 
 ### 1.3 Project Overview
 
@@ -103,7 +103,7 @@ This project will focus on additive white Gaussian noise. The main source of thi
 
 #### 2.1.2.1 Median Filter
 
-Assigns the median value to the pixel of it and it's neighbours. It requires no input parameters to work. [3]
+Assigns the median value to the pixel of it and it's neighbours. It requires no input parameters to work. [4]
 
 #### 2.1.2.2 Gaussian Filter
 
@@ -115,7 +115,7 @@ Attempts to reduce the total variance in the image based on a given weight param
 
 #### 2.1.2.4 Weiner Filter
 
-Estimates the desired target image by applying a linear time-invarient filter to the signal. Similar to the Gaussian filter, it requires a noise level estimation.[3]
+Estimates the desired target image by applying a linear time-invarient filter to the signal. Similar to the Gaussian filter, it requires a noise level estimation.[4]
 
 ### 2.1.3 Weak Texture Patches
 
@@ -145,23 +145,29 @@ As shown above, we have four methods of evaluating the effectiveness of a denois
 
 #### 2.3.1 Root Mean Squared Error (RMSE)
 
-RMSE gives us the root of the average difference between pixel values in the original image and the denoised image.
+The mean squared error(MSE) gives the average difference between pixel values in the original image and the denoised image. The RMSE is the square root of this. 
 
 $$ MSE = {1\over{MN}}{\sum^M_{i=1}}{\sum^N_{j=1}}(x(i,j) - y(i,j) )^2 $$
 
 $$ RMSE = \sqrt{MSE}$$
 
+where $x$ and $y$ are the original image and the denoised image and $M$ and $N$ are the dimensions of the images.
+
 #### 2.3.2 Peak Signal To Noise Ratio (PSNR)
+
+The PSNR is used as a quality measure when evaluating images. It represents the ratio between the average diference in pixel values and the maximum possible signal. It's particularly useful due to its low complexity which suits it's use as a fitness function.
 
 $$PSNR = 10\log_{10}{{(2^n - 1)^2}\over{\sqrt{MSE}}}$$
 
+where $n$ is the number of bits to represent each pixel. For greyscale images this value is 8 while for full colour 24 bits are required.
+
 #### 2.3.3 Image Quality Index (IQI)
+
+IQI is another metric for image quality based on the degree of disturbance. It does this by analysing the loss of correlation, luminance distortion, and contrast distortion.
 
 $$IQI = { 4*\sigma_{xy}*\bar{x}*\bar{y}\over{(\sigma^2_x + \sigma^2_y)*((\bar{x})^2 + (\bar{y})^2)} }$$
 
-#### 2.3.4 Structural Similarity Index Metric SSIM
-
-$$SSIM = {(2*\bar x * \bar y + C_1)(2*\sigma_{xy} + C_2) \over (\sigma^2_x + \sigma^2_y + C_2)*((\bar{x})^2 + (\bar{y})^2 + C_1)}$$
+where
 
 $$\bar x = {1\over N}\sum^N_{i=1} x_i$$
 
@@ -173,6 +179,19 @@ $$\sigma^2_y = {1 \over N - 1} \sum^N_{i=1}(y_i-\bar y)^2$$
 
 $$\sigma_{xy} = {1 \over N - 1} \sum^N_{i=1}(x_i-\bar x)(y_i-\bar y)$$
 
+#### 2.3.4 Structural Similarity Index Metric SSIM
+
+SSIM is another metric that returns a result based on the luminance contrast and structral difference between the two images. 
+
+$$SSIM = {(2*\bar x * \bar y + C_1)(2*\sigma_{xy} + C_2) \over (\sigma^2_x + \sigma^2_y + C_2)*((\bar{x})^2 + (\bar{y})^2 + C_1)}$$
+
+where
+
+$$ C_1 = (k_1L)^2$$
+$$ C_2 = (k_2L)^2$$
+$$ L = (2^n - 1)$$
+
+$k_1 = 0.01$ and $k_2 = 0.03$ by default.
 
 ## References
 
@@ -180,6 +199,9 @@ $$\sigma_{xy} = {1 \over N - 1} \sum^N_{i=1}(x_i-\bar x)(y_i-\bar y)$$
 
 [2] Duran, Joan & Coll, Bartomeu & Sbert, Catalina. (2013). Chambolle's Projection Algorithm for Total Variation Denoising. Image Processing On Line. 3. 301-321. 10.5201/ipol.2013.61.     
 
-[3] Rafati, Mehravar, et al. “Fuzzy Genetic-Based Noise Removal Filter for Digital Panoramic X-Ray Images.” Biocybernetics and Biomedical Engineering, vol. 38, no. 4, 2018, pp. 941–965., doi:10.1016/j.bbe.2018.08.005.
+[3] Zhou Wang and A. C. Bovik, "A universal image quality index," in IEEE Signal Processing Letters, vol. 9, no. 3, pp. 81-84, March 2002.
+doi: 10.1109/97.995823
 
-[4] Liu, Xinhao, et al. “Single-Image Noise Level Estimation for Blind Denoising.” IEEE Transactions on Image Processing, vol. 22, no. 12, 2013, pp. 5226–5237., doi:10.1109/tip.2013.2283400.
+[4] Rafati, Mehravar, et al. “Fuzzy Genetic-Based Noise Removal Filter for Digital Panoramic X-Ray Images.” Biocybernetics and Biomedical Engineering, vol. 38, no. 4, 2018, pp. 941–965., doi:10.1016/j.bbe.2018.08.005.
+
+[5] Liu, Xinhao, et al. “Single-Image Noise Level Estimation for Blind Denoising.” IEEE Transactions on Image Processing, vol. 22, no. 12, 2013, pp. 5226–5237., doi:10.1109/tip.2013.2283400.
