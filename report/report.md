@@ -125,10 +125,53 @@ Liu, Xinhao, et al.[4] propose a method to estimate noise levels of additive whi
 
 ### 2.2 Evolutionary Algorithms
 
+Evolutionary algorithms(EA) attempt to mimic the process of natural evolution. Sistinct components work together to emulate this process in some manner. At the most basic level, an EA will maintain a population of individuals, evaluate the effectiveness of each individual using a fitness function, and create the population of the next generation. It repeats this step for a number of generations until an optimal solution is found. After the final generation, the EA will return the overall best-performing individual as a solution. This solution is optimized to the given fitness function. It is ideal when finding solutions to problems without making assumptions about the optimal result. In particular, it is useful in this project as it allows us to search for an optimal pair of denoising filters to use on each of the texture patch types. It also allows for easy and rapid expansion of the filters/parameter combinations being used. Below is a more detailed summary of the elements in an EA:
 
+#### 2.2.1 Individual & Population
+
+An individual in an EA is usually represented as a bit string. The position of a sequence of bits in the string is used to represent what action to take depending on the situation. A population is the set of individuals used for any given generation.
+
+#### 2.2.2 Evaluation & Fitness
+
+The evaluation step takes each individual in the population and returns a fitness value. This step will vary the most between different uses. In the case of this project, it will measure the effectiveness of the denoising filter.
+
+#### 2.2.3 Selection, Crossover and Mutating
+
+There are a number of different techniques for the selection of individuals that are used to create a population for the next generation. One example of a selection function that this project uses is tournament selection. Tournament selection randomly takes a small group of individuals and returns the best performing amongst them. The crossover step pairs up the selected individuals and creates two new individuals. It creates the new individuals by applying a point crossover on the bits strings and returning the two possible results. Finally, there is a chance, decided by the user, for an individual in the next population to be mutated in some way. One common way to do this is to flip one bit in the bit string.
 
 ### 2.3 Evaluation Metrics
 
+As shown above, we have four methods of evaluating the effectiveness of a denoising filter. The main reason for this is that the EA optimizes the result based on the fitness function. One of the above metrics will be used as a the fitness function and we use the others to analyse it's effectiveness in other areas.
+
+#### 2.3.1 Root Mean Squared Error (RMSE)
+
+RMSE gives us the root of the average difference between pixel values in the original image and the denoised image.
+
+$$ MSE = {1\over{MN}}{\sum^M_{i=1}}{\sum^N_{j=1}}(x(i,j) - y(i,j) )^2 $$
+
+$$ RMSE = \sqrt{MSE}$$
+
+#### 2.3.2 Peak Signal To Noise Ratio (PSNR)
+
+$$PSNR = 10\log_{10}{{(2^n - 1)^2}\over{\sqrt{MSE}}}$$
+
+#### 2.3.3 Image Quality Index (IQI)
+
+$$IQI = { 4*\sigma_{xy}*\bar{x}*\bar{y}\over{(\sigma^2_x + \sigma^2_y)*((\bar{x})^2 + (\bar{y})^2)} }$$
+
+#### 2.3.4 Structural Similarity Index Metric SSIM
+
+$$SSIM = {(2*\bar x * \bar y + C_1)(2*\sigma_{xy} + C_2) \over (\sigma^2_x + \sigma^2_y + C_2)*((\bar{x})^2 + (\bar{y})^2 + C_1)}$$
+
+$$\bar x = {1\over N}\sum^N_{i=1} x_i$$
+
+$$\bar y = {1\over N}\sum^N_{i=1} y_i$$
+
+$$\sigma^2_x = {1 \over N - 1} \sum^N_{i=1}(x_i-\bar x)^2$$
+
+$$\sigma^2_y = {1 \over N - 1} \sum^N_{i=1}(y_i-\bar y)^2$$
+
+$$\sigma_{xy} = {1 \over N - 1} \sum^N_{i=1}(x_i-\bar x)(y_i-\bar y)$$
 
 
 ## References
