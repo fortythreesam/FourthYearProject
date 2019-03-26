@@ -106,6 +106,8 @@ There are many ways to represent images in memory. The standard way to represent
 
 Since storage space limits the ability to store large images due to the increasing space required by higher resolutions, a number of steps are taken to compress the data. One step is to apply colour quantisation to the image to reduce the range of values being stored. Quantisation is the process of estimating a range of values into a discrete value. This can reduce the amount of data stored but retain the same visual quality. A problem with this is it adds errors in the values to the image known as noise. Depending on the level of quantisation, the noise can be more or less noticeable.
 
+The main goal the student will work towards is to visually reduce the effects of noise automatically. Currently, a person looking to denoise an image manually will need to select the filter and parameters themselves. This can be a cumbersome process if they don't understand what is required. Situations like this lead to a lot of trial and error which can be time-consuming. The student hopes to achieve scores in various quality measures that are better than applying simple filters.
+
 This project will focus on additive white Gaussian noise. The main source of this type of noise is during the aquisition stage of the image due to faults in the sensor e.g. the sensors temperature is too high. A standard model for this type of noise is $X = Y + N$ where $X$ is the noisy image, $Y$ is the pure image and $N$ is the layer of additive white gaussian noise. There a various methods already available to reduce this type of noise. Listed here are a few filter types:
 
 #### 2.1.2.1 Median Filter
@@ -200,6 +202,45 @@ $$ L = (2^n - 1)$$
 
 $k_1 = 0.01$ and $k_2 = 0.03$ by default.
 
+___
+
+$$\pagebreak$$
+
+## Chapter 3
+
+## Design
+
+### 4.1 Design Overview
+
+As shown in the previous section, the main design for this project is split across the various aspects required to build an EA. The bulk of the work will be in implementing the evaluate function. The student will use python and a number of supporting libraries in order to achieve this. Prior to the EA running, the image dataset is generated.
+
+### 4.1 Image Dataset
+
+The image dataset is held in a custom object. It will maintain a copy of the original image, the noisy image and the weak texture patch mask. Since the generation of the weak texture patch also estimates the noise level we store this as well to use when evaluating the result. It also provides functionality to reload the dataset and set the level of noise that's applied. 
+
+### 4.2 The Evaluate Function
+
+This step in the EA comprises of 3 basic steps. Firstly, it takes the individual bit string and decodes it, mapping it to the actions required to be taken out. Next, the denoising filters are applied to copies of the noisy image. The texture patches are extracted using the mask that was previously generated. The extracted denoised images are then recombined to give the full image. Finally, the third step is to return a value as the fitness of the individual. This function will be one of the four evaluation functions outlined previously. Doing this allows for experimentation with optimizing the result to different evaluation metrics.
+
+#### 4.2.1 Individual Decoding
+
+In this case, the first half of the bit string will represent the denoising filter and parameters to use on the weak texture patches while the rest represents the filter to use on the rich texture patches. 
+
+#### 4.2.2 Denoising the image
+
+
+
+#### 4.2.3 Fitness 
+
+
+### 4.3 Final EA components
+
+#### 4.3.1 Selection
+
+#### 4.3.2 Crossover
+
+
+
 ## References
 
 [1]  Hossein Hosseini, Baicen Xiao, and Radha Poovendran.  Google’scloud  vision  api  is  not  robust  to  noise.   InMachine  Learning  andApplications  (ICMLA),  2017  16th  IEEE  International  Conference  on,pages 101–105. IEEE, 2017
@@ -212,6 +253,5 @@ $k_1 = 0.01$ and $k_2 = 0.03$ by default.
 doi: 10.1109/97.995823
 
 [5] Zhou Wang, A. C. Bovik, H. R. Sheikh and E. P. Simoncelli, "Image quality assessment: from error visibility to structural similarity," in IEEE Transactions on Image Processing, vol. 13, no. 4, pp. 600-612, April 2004.
-
 
 [6] Liu, Xinhao, et al. “Single-Image Noise Level Estimation for Blind Denoising.” IEEE Transactions on Image Processing, vol. 22, no. 12, 2013, pp. 5226–5237., doi:10.1109/tip.2013.2283400.

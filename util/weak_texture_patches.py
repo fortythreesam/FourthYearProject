@@ -3,9 +3,6 @@ import scipy
 import math
 from skimage.util import view_as_windows as viewW
 
-def im2col_sliding_strided_v2(A, BSZ, stepsize=1):
-    return viewW(A, (BSZ[0],BSZ[1])).reshape(-1,BSZ[0]*BSZ[1]).T[:,::stepsize]
-
 def im2col_sliding_broadcasting(A, BSZ, stepsize=1):
     # Parameters
     M,N = A.shape
