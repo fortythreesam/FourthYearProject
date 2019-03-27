@@ -13,10 +13,10 @@ def denoise_image(image, action_id):
     
     psf = numpy.ones((5, 5, 3)) / 25
     actions = [
-        lambda x : (filters.gaussian(x ,sigma=0.01)*255).astype(numpy.uint8),
-        lambda x : (filters.gaussian(x, sigma=0.02)*255).astype(numpy.uint8),
-        lambda x : (filters.gaussian(x, sigma=0.03)*255).astype(numpy.uint8),
-        lambda x : (filters.gaussian(x, sigma=0.4)*255).astype(numpy.uint8),
+        lambda x : (filters.gaussian(x ,sigma=0.5)*255).astype(numpy.uint8),
+        lambda x : (filters.gaussian(x, sigma=1)*255).astype(numpy.uint8),
+        lambda x : (filters.gaussian(x, sigma=2)*255).astype(numpy.uint8),
+        lambda x : (filters.gaussian(x, sigma=3)*255).astype(numpy.uint8),
         lambda x : (restoration.denoise_tv_chambolle(x, weight=0.02)*255).astype(numpy.uint8),
         lambda x : (restoration.denoise_tv_chambolle(x, weight=0.01)*255).astype(numpy.uint8),
         lambda x : (restoration.denoise_tv_chambolle(x, weight=0.005)*255).astype(numpy.uint8),
