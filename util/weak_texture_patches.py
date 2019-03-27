@@ -81,7 +81,6 @@ def noise_level(img, patchsize = 7, decim = 0, conf = None, itr = 3):
             cov = X.dot((X.conj().T))/(X.shape[1]-1)
             d = numpy.linalg.eigvals(cov)
             d.sort()
-            # d = d[::-1]
             sig2 = d[0]
         for i in range(2,itr+1):
             # weak texture selection

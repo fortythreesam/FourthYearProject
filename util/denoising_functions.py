@@ -15,7 +15,7 @@ def denoise_image(image, action_id):
     actions = [
         lambda x : (filters.gaussian(x ,sigma=0.01)*255).astype(numpy.uint8),
         lambda x : (filters.gaussian(x, sigma=0.02)*255).astype(numpy.uint8),
-        lambda x : (filters.gaussian(x, sigma=0.025)*255).astype(numpy.uint8),
+        lambda x : (filters.gaussian(x, sigma=0.03)*255).astype(numpy.uint8),
         lambda x : (filters.gaussian(x, sigma=0.4)*255).astype(numpy.uint8),
         lambda x : (restoration.denoise_tv_chambolle(x, weight=0.02)*255).astype(numpy.uint8),
         lambda x : (restoration.denoise_tv_chambolle(x, weight=0.01)*255).astype(numpy.uint8),
@@ -56,7 +56,6 @@ def evaluate(individual, images ,display=False, image_index = 0, performance = p
               (performance_functions.peak_signal_noise_ratio(images.base_images[image_index], denoised_image),\
                performance_functions.image_quality_index(images.base_images[image_index], denoised_image),\
                performance_functions.structural_similarity_indix(images.base_images[image_index], denoised_image),))
-        plt.rcParams["figure.figsize"]=20,20
         merged_images = numpy.hstack((images.base_images[image_index],\
                                       images.noisy_images[image_index]*255,\
                                       denoised_image))\
