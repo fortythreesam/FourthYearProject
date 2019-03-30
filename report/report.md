@@ -210,40 +210,41 @@ $$\pagebreak$$
 
 ## Design
 
-### 4.1 Design Overview
+### 3.1 Design Overview
 
 As shown in the previous section, the main design for this project is split across the various aspects required to build an EA. The bulk of the work will be in implementing the evaluate function. The student will use python and a number of supporting libraries in order to achieve this. Prior to the EA running, the image dataset is generated.
 
-### 4.1 Image Dataset
+### 3.2 Image Dataset
 
-The image dataset is held in a custom object. It will maintain a copy of the original image, the noisy image and the weak texture patch mask. Since the generation of the weak texture patch also estimates the noise level we store this as well to use when evaluating the result. It also provides functionality to reload the dataset and set the level of noise that's applied. 
+The image dataset is held in a custom object. It will maintain a copy of the original image, the noisy image and the weak texture patch mask. Since the generation of the weak texture patch also estimates the noise level it stores this as well to use when evaluating the result. It also provides functionality to reload the dataset and set the level of noise that's applied. 
 
-### 4.2 The Evaluate Function
+### 3.3 The Evaluate Function
 
 This step in the EA comprises of 3 basic steps. Firstly, it takes the individual bit string and decodes it, mapping it to the actions required to be taken out. Next, the denoising filters are applied to copies of the noisy image. The texture patches are extracted using the mask that was previously generated. The extracted denoised images are then recombined to give the full image. Finally, the third step is to return a value as the fitness of the individual. This function will be one of the four evaluation functions outlined previously. Doing this allows for experimentation with optimizing the result to different evaluation metrics.
 
-#### 4.2.1 Individual Decoding
+#### 3.3.1 Individual Decoding
 
-In this case, the first half of the bit string will represent the denoising filter and parameters to use on the weak texture patches while the rest represents the filter to use on the rich texture patches. 
+In this case, the first half of the bit string will map to the denoising filter and parameters to use on the weak texture patches while the rest represents the filter to use on the rich texture patches. 
 
-#### 4.2.2 Denoising the image
+#### 3.3.2 Denoising the image
 
+This step in the evaluation function is the most important as the effectiveness of the denoising filter is what gets measured in the final step. The filters selected by the individual are applied to separate copies of the image. The weak/rich texture patches are extracted using the previously generated mask. This can be achieved by the following: $DW = DI_1 * W$ where $W$ is the weak texture mask, $DI_1$ is the denoised image using the filter selected for the weak textures, and $DW$ is the denoised weak textures. Then, the denoised rich texture, $DR$, is obtained from the following: $DR = DI_2 - (DI_2 * W)$ where $DI_2$ is the denoised image using the filter selected for the rich textures. Finally,  the full denoised image is reformed as $DI = DW + DR$ where $DI$ is the full denoised image.
 
+#### 3.3.3 Fitness 
 
-#### 4.2.3 Fitness 
+The image dataset generated above retains the original, untouched, image. The denoised image and the original image are put into one of the fitness functions mentioned above. This is set by the user but uses RMSE by default. The EA will optimize for the lowest possible RMSE score but optimise for the highest score if PSNR, IQI, or SSIM are used.
 
+### 3.4 Final EA components
 
-### 4.3 Final EA components
+#### 3.4.1 Selection
 
-#### 4.3.1 Selection
-
-#### 4.3.2 Crossover
+#### 3.4.2 Crossover
 
 
 
 ## References
 
-[1]  Hossein Hosseini, Baicen Xiao, and Radha Poovendran.  Google’scloud  vision  api  is  not  robust  to  noise.   InMachine  Learning  andApplications  (ICMLA),  2017  16th  IEEE  International  Conference  on,pages 101–105. IEEE, 2017
+[1]  Hossein Hosseini, Baicen Xiao, and Radha Poovendran. Google’s cloud vision api is not robust to noise. In Machine Learning and Applications (ICMLA), 2017 16th IEEE International Conference on, pages 101–105. IEEE, 2017
 
 [2] Duran, Joan & Coll, Bartomeu & Sbert, Catalina. (2013). Chambolle's Projection Algorithm for Total Variation Denoising. Image Processing On Line. 3. 301-321. 10.5201/ipol.2013.61.     
 
