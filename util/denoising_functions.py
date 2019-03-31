@@ -6,8 +6,8 @@ from deap import algorithms, base, creator, tools
 from skimage import data, io, filters, restoration
 from matplotlib import pyplot as plt
 from util import performance_functions
+from util.image_dataset import ImageDataset
 importlib.reload(performance_functions) 
-
 
 def denoise_image(image, action_id):
     
@@ -70,7 +70,7 @@ def evaluate(individual, images ,display=False, image_index = 0, performance = p
 
 def run_ea(noise_level = 0.005, pop = 20, generations = 20, evaluation_method = "RMSE"):
     
-    images = ImageDataset(2,noise_level)
+    images = ImageDataset(noise_level)
     NUM_FILTERS = 8
     SIZE_OF_INDIVIDUAL = math.ceil(math.log2(NUM_FILTERS**2))
 

@@ -2,7 +2,7 @@
 
 $$\pagebreak$$
 
-## Table Of Contents
+## Contents
 
 1. Introduction
    1. Motivation
@@ -14,18 +14,30 @@ $$\pagebreak$$
    4. Achievements
 2. Analysis
    1. Image Processing
-      1. Image Noise/Denoising
+      1. Images In Computers
+      2. Image Noise/Denoising
          1. Median Filter
          2. Gaussian Filter
          3. Chambolle's Total Variation Filter 
          4. Weiner Filter
-      2. Weak Texture Patches
+      3. Weak Texture Patches
    2. Evolutionary Algorithms
       1. Individual & Population
       2. Evaluation & Fitness
       3. Selection, Crossover and Mutating
    3. Evaluation Metrics
+     1. Root Mean Squared Error (RMSE)
+     2. Peak Signal To Noise Ratio (PSNR)
+     3. Image Quality Index (IQI)
+     4. Structural Similarity Index Metric (SSIM)
 3. Design
+    1. Design Overview
+    2. Image Dataset
+    3. The Evaluate Function
+      1 Individual Decoding
+      1. Denoising the image
+      2. Fitness
+    4. Final EA components (Selection, Crossover & Mutation)
 4. Implementation
 5. Evaluation
 6. Conclusions
@@ -90,7 +102,6 @@ Initially, the project takes in an image and applies a layer of additive white G
 ___
 
 $$\pagebreak$$
-___
 
 ## Chapter 2
 
@@ -146,7 +157,7 @@ The evaluation step takes each individual in the population and returns a fitnes
 
 #### 2.2.3 Selection, Crossover & Mutating
 
-There are a number of different techniques for the selection of individuals that are used to create a population for the next generation. One example of a selection function that this project uses is tournament selection. Tournament selection randomly takes a small group of individuals and returns the best performing amongst them. The crossover step pairs up the selected individuals and creates two new individuals. It creates the new individuals by applying a point crossover on the bits strings and returning the two possible results. Finally, there is a chance, decided by the user, for an individual in the next population to be mutated in some way. One common way to do this is to flip one bit in the bit string.
+There are a number of different techniques for the selection of individuals that are used to create a population for the next generation. One example of a selection function that this project uses is tournament selection. Tournament selection randomly takes a small group of individuals and returns the best performing amongst them. The crossover step pairs up the selected individuals and creates two new individuals. It creates the new individuals by applying a point crossover on the bits strings and returning the two possible results. Finally, there is a chance, decided by the user, for an individual in the next population to be mutated in some way. One common way to do this is to flip one bit in the bit string. The EA does this to prevent every individual from becoming the exact same and preventing further experimentation.
 
 ### 2.3 Evaluation Metrics
 
@@ -234,11 +245,42 @@ This step in the evaluation function is the most important as the effectiveness 
 
 The image dataset generated above retains the original, untouched, image. The denoised image and the original image are put into one of the fitness functions mentioned above. This is set by the user but uses RMSE by default. The EA will optimize for the lowest possible RMSE score but optimise for the highest score if PSNR, IQI, or SSIM are used.
 
-### 3.4 Final EA components
+### 3.4 Final EA components (Selection, Crossover & Mutation)
 
-#### 3.4.1 Selection
+This project uses a simple tournament selection as a means to pick the individuals used in the crossover. Since individuals comprise of two decisions, a single point crossover is used. For each pair of individuals, a new pair is created such that the first individual is made up from the first half of one parent, and the second half of the other. The second individual is then created using the remaining parts of the parents. As for the mutation step, each individual will have a 20% chance to have one of their bits flipped.
+___
 
-#### 3.4.2 Crossover
+$$\pagebreak$$
+
+## Chapter 4
+
+## Implementation
+
+### 4.1 Technologies Used
+
+
+
+### 4.1.1 Python Libraries
+
+
+
+### 4.1.2 Jupyter Notebook
+
+
+
+### 4.2 Images
+
+
+### 4.3 Evaluation Function 
+
+#### 4.3.1 Individual Decoding and Action Mapping
+
+#### 4.3.2 Applying Denoising Filters
+
+#### 
+
+
+
 
 
 
