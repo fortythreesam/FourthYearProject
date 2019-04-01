@@ -263,20 +263,24 @@ The student chose to implement the bulk of his project in Python3. Pyhton3 has a
 ### 4.1.1 Python Libraries
 
 - Numpy: A large library that provides access to N-dimensional arrays with many, fast, supporting functions. THe images used in this project will be stored in numpy arrays. Numpy also contains many useful linear algebra functions which are used to extract the differant texture patches.
-- Scikit-Image: 
+- Scikit-Image: This library implements functions to achieve many common image processing tasks. The main ones this project will use are the denoising filters that were previously mentioned. Functions for getting statistics/analysis from images such as some of the previously mentioned evaluation function. 
+- MatPlotLib: Due to the nature of an image processing project, there is a lot of visual data at each stage. MatPlotLib allows for easy visualisation of data such as the images before and after, and the weak texture mask.
 
 ### 4.1.2 Jupyter Notebook
 
-
+The student uses a jupyter notebook to implement and test the workflow of the denoising proccess. A jupyter notebook is a self-hosted web app that allows for live-code, visualisations and text fields. It allows quick and easy tweaking of any specific values and quickly seeing the resulting effect. Since it allows for text fields, sections of code are easily documented and the workflow can be easily followed.
 
 ### 4.2 Images
 
+Images from the Berkely segmentation dataset will be used for testing and evaluation purposes. This allows us to ensure our weak texture mask lines up with the human segmented images as the broder bewtween rich and weak textures is often a harsh change. The images availabe in this dataset are also at a reasonable resolution. This prevents the EA run time from becoming too excessive as applying many denoising filters becomes more cumbersome on the cpu as resolution increases.  
 
-### 4.3 Evaluation Function 
+### 4.3 Weak Texture Patches
 
-#### 4.3.1 Individual Decoding and Action Mapping
+### 4.4 Evaluation Function 
 
-#### 4.3.2 Applying Denoising Filters
+#### 4.4.1 Individual Decoding and Action Mapping
+
+#### 4.4.2 Applying Denoising Filters
 
 #### 
 
@@ -299,3 +303,5 @@ doi: 10.1109/97.995823
 [5] Zhou Wang, A. C. Bovik, H. R. Sheikh and E. P. Simoncelli, "Image quality assessment: from error visibility to structural similarity," in IEEE Transactions on Image Processing, vol. 13, no. 4, pp. 600-612, April 2004.
 
 [6] Liu, Xinhao, et al. “Single-Image Noise Level Estimation for Blind Denoising.” IEEE Transactions on Image Processing, vol. 22, no. 12, 2013, pp. 5226–5237., doi:10.1109/tip.2013.2283400.
+
+[7] D. Martin and C. Fowlkes and D. Tal and J. Malik. "A Database of Human Segmented Natural Images and its Application to Evaluating Segmentation Algorithms and Measuring Ecological Statistics." {Proc. 8th Int'l Conf. Computer Vision , July 2001, vol. 2, pp. 416-423.
