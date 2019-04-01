@@ -258,11 +258,12 @@ $$\pagebreak$$
 
 ### 4.1 Technologies Used
 
-
+The student chose to implement the bulk of his project in Python3. Pyhton3 has a lot of supporting libraries to aid in complex maths, image processing and evolutionary algorithms. It's ease of use also allowed for quick prototyping and debugging. This project also uses a virtual environment to manage the various libraries and maintain a standard development environment across machines. Below is a list of the supporting libraries and a brief description of each one:
 
 ### 4.1.1 Python Libraries
 
-
+- Numpy: A large library that provides access to N-dimensional arrays with many, fast, supporting functions. THe images used in this project will be stored in numpy arrays. Numpy also contains many useful linear algebra functions which are used to extract the differant texture patches.
+- Scikit-Image: 
 
 ### 4.1.2 Jupyter Notebook
 
