@@ -272,15 +272,43 @@ The student uses a jupyter notebook to implement and test the workflow of the de
 
 ### 4.2 Images
 
-Images from the Berkely segmentation dataset will be used for testing and evaluation purposes. This allows us to ensure our weak texture mask lines up with the human segmented images as the broder bewtween rich and weak textures is often a harsh change. The images availabe in this dataset are also at a reasonable resolution. This prevents the EA run time from becoming too excessive as applying many denoising filters becomes more cumbersome on the cpu as resolution increases.  
+Images from the Berkely segmentation dataset[7] will be used for testing and evaluation purposes. This allows us to ensure our weak texture mask lines up with the human segmented images as the border between rich and weak textures is often a harsh change. The images available in this dataset are also at a reasonable resolution. This prevents the EA run time from becoming too excessive as applying many denoising filters becomes more cumbersome on the CPU as resolution increases.  
+
+The implementation of the dataset object is trivial as it requires a single load images function that accepts the number of images to load and the level of Gaussian noise to add. When images are loaded in, the colour channels are initially in the order of blue, green, red (BGR) while the standard used in display functions is red, green, blue (RGB). Changing the order in this case only requires a reversing of the order of the channels. Python3's list indexing simplifies this as shown below:
+
+```python3
+new_image = new_image[:,:,::-1]
+```
 
 ### 4.3 Weak Texture Patches
 
+
+
 ### 4.4 Evaluation Function 
+
+The evaluation function requires two parameters to be given, the individual, and the image dataset to be used. There are also three optional parameters that can be set. One of these is a curried performance function that takes two images and returns a number. This allows us to define a generic evaluate function that can be changed depending on which metric it is optimizing towards. There is also the option to display the image at each stage of the denoising (original image, noisy image and denoised image).  This is false by default due to the frequency that this function gets called during the running of the EA.
 
 #### 4.4.1 Individual Decoding and Action Mapping
 
+Individuals are passed into the evaluation function as a Python list of ones and zeros. A list comprehension is used to converts each half into an int which maps to the filter to be used.
+
+"""python3
+def bits_to_int(bit_list):
+    return sum([(x*(2**i)) for i, x in enumerate(bit_list[::-1])])
+"""
+
+Each filter with predetermined paramters is placed in a list of lamda functions that take in a single argument and return a denoised image. This allows the denoising process to call a position in the list as a function with one argument. Functionality like this is particularily helpful as it lets a user expand or reduce the number/types of filters used easily without worrying about breaking functionality. Below is a short example of this with two entries:
+
+"""python3
+    denoising_filters = [
+        lambda x : (filters.gaussian(x ,sigma=1)*255).astype(numpy.uint8),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.01)*255).astype(numpy.uint8),
+    ]
+"""
+
 #### 4.4.2 Applying Denoising Filters
+
+
 
 #### 
 

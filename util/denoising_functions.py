@@ -12,7 +12,7 @@ importlib.reload(performance_functions)
 def denoise_image(image, action_id):
     
     psf = numpy.ones((5, 5, 3)) / 25
-    actions = [
+    denoising_filters = [
         lambda x : (filters.gaussian(x ,sigma=0.5)*255).astype(numpy.uint8),
         lambda x : (filters.gaussian(x, sigma=1)*255).astype(numpy.uint8),
         lambda x : (filters.gaussian(x, sigma=2)*255).astype(numpy.uint8),
@@ -22,14 +22,14 @@ def denoise_image(image, action_id):
         lambda x : (restoration.denoise_tv_chambolle(x, weight=0.005)*255).astype(numpy.uint8),
         lambda x : (restoration.denoise_tv_chambolle(x, weight=0.001)*255).astype(numpy.uint8),
     ]
-    if action_id > len(actions):
+    if action_id > len(denoising_filters):
         return image
-    return actions[action_id](image)
+    return denoising_filters[action_id](image)
 
 def bits_to_int(bit_list):
     return sum([(x*(2**i)) for i, x in enumerate(bit_list[::-1])])
 
-def extract_weak_texture(image, weak_texture_mask):
+def extract_textures(image, weak_texture_mask):
     weak_texture = (image * weak_texture_mask).astype(numpy.uint8)
     strong_texture = image - weak_texture
     return strong_texture.astype(numpy.uint8), weak_texture.astype(numpy.uint8)
@@ -42,8 +42,8 @@ def excecute_actions(individual, images, image_index = 0):
     denoised_weak_texture = denoise_image(images.noisy_images[image_index], weak_texture_action)
     denoised_strong_texture = denoise_image(images.noisy_images[image_index], strong_texture_action)
     
-    strong_texture, _ = extract_weak_texture(denoised_strong_texture, images.weak_texture_masks[image_index])
-    _, weak_texture = extract_weak_texture(denoised_weak_texture, images.weak_texture_masks[image_index])
+    strong_texture, _ = extract_textures(denoised_strong_texture, images.weak_texture_masks[image_index])
+    _, weak_texture = extract_textures(denoised_weak_texture, images.weak_texture_masks[image_index])
     
     return (strong_texture + weak_texture ) 
 
@@ -52,10 +52,6 @@ def evaluate(individual, images ,display=False, image_index = 0, performance = p
     denoised_image = excecute_actions(individual, images, image_index)
     
     if display:
-        print("PSNR: %f\n IQI: %f\n SSIM: %f\n" % \
-              (performance_functions.peak_signal_noise_ratio(images.base_images[image_index], denoised_image),\
-               performance_functions.image_quality_index(images.base_images[image_index], denoised_image),\
-               performance_functions.structural_similarity_indix(images.base_images[image_index], denoised_image),))
         merged_images = numpy.hstack((images.base_images[image_index],\
                                       images.noisy_images[image_index]*255,\
                                       denoised_image))\
@@ -68,9 +64,12 @@ def evaluate(individual, images ,display=False, image_index = 0, performance = p
                                                    
     return performance(denoised_image, images.base_images[image_index]),
 
-def run_ea(noise_level = 0.005, pop = 20, generations = 20, evaluation_method = "RMSE"):
+def get_denoised_image(individual, images , image_index):
+    return excecute_actions(individual, images, image_index)
+
+def run_ea(noise_level = 0.005, pop = 20, generations = 20, evaluation_method = "RMSE", num_other_images = 4):
     
-    images = ImageDataset(noise_level)
+    images = ImageDataset(num_other_images ,noise_level)
     NUM_FILTERS = 8
     SIZE_OF_INDIVIDUAL = math.ceil(math.log2(NUM_FILTERS**2))
 
@@ -107,3 +106,41 @@ def run_ea(noise_level = 0.005, pop = 20, generations = 20, evaluation_method = 
     algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=20, verbose=False)
     print(tools.selBest(pop, k=1)[0])
     print(evaluate(tools.selBest(pop, k=1)[0], True))
+    compare_results(tools.selBest(pop, k=1)[0], images, noise_level)
+
+def compare_results(individual, images, noise_level):
+    test_image = evaluate(individual, images, 0)
+    for i in range(1,4):
+        print("Evaluation of unseen image %d:\n"%(i))
+        new_denoised_image = get_denoised_image(individual, images, i)
+        new_denoised_image_weak_filter = get_denoised_image(\
+                                            individual[:len(individual)//2] + individual[:len(individual)//2],
+                                            images, i)
+        new_denoised_image_rich_filter = get_denoised_image(\
+                                            individual[len(individual)//2:] + individual[len(individual)//2:],
+                                            images, i)
+        denoise_image_gaussian_blur = (filters.gaussian(images.noisy_images[i], sigma= noise_level*2 ) * 255).astype(numpy.uint8)
+        image_stages_merged = numpy.hstack((images.base_images[i], images.weak_texture_masks[i], new_denoised_image))
+        plt.title("Original Image(Left) | Weak Texture Mask | Denoised Image")
+        plt.imshow(image_stages_merged)
+        plt.show()
+        
+        print("Baseline Statistics:")
+        print_statistics(images.base_images[i], images.noisy_images[i])
+        print("Our Method Statistics:")
+        print_statistics(images.base_images[i], new_denoised_image)
+        print("Weak Texture Filter Only Statistics:")
+        print_statistics(images.base_images[i], new_denoised_image_weak_filter)
+        print("Rich Texture Filter Only Statistics:")
+        print_statistics(images.base_images[i], new_denoised_image)
+        print("Standard Gaussian Blur Statistics:")
+        print_statistics(images.base_images[i], denoise_image_gaussian_blur)
+        
+        
+def print_statistics(image, evaluation_image):
+        print("RMSE: %f | PSNR: %f | IQI: %f | SSIM: %f" % \
+             (performance_functions.root_mean_squared_error(image, evaluation_image),\
+              performance_functions.peak_signal_noise_ratio(image, evaluation_image),\
+              performance_functions.image_quality_index(image, evaluation_image),\
+              performance_functions.structural_similarity_indix(image, evaluation_image),))
+    

@@ -20,12 +20,12 @@ class ImageDataset:
     def load_files(self, size):
         self.base_images = []
         numbers_used = []
-        while len(self.base_images) < 4:
+        while len(self.base_images) < size:
             i = random.randint(1,self.NUM_IMAGES)
             if i in numbers_used:
                 continue
             image_name = str(i) + ".jpg"
-            new_image = cv.imread(self.dir_location+image_name);
+            new_image = cv.imread(self.dir_location+image_name)
             new_image = new_image[:,:,::-1]
             self.base_images += [new_image]
             noisy_image = random_noise(new_image, mode="gaussian", var=self.sigma)

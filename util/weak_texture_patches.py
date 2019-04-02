@@ -3,20 +3,16 @@ import scipy
 import math
 from skimage.util import view_as_windows as viewW
 
-def im2col_sliding_broadcasting(A, BSZ, stepsize=1):
-    # Parameters
-    M,N = A.shape
-    col_extent = N - BSZ[1] + 1
-    row_extent = M - BSZ[0] + 1
+def im2col(a, block_size, stepsize=1):
+    M,N = a.shape
+    col_extent = N - block_size[1] + 1
+    row_extent = M - block_size[0] + 1
 
-    # Get Starting block indices
-    start_idx = numpy.arange(BSZ[0])[:,None]*N + numpy.arange(BSZ[1])
+    start_idx = numpy.arange(block_size[0])[:,None]*N + numpy.arange(block_size[1])
 
-    # Get offsetted indices across the height and width of input array
     offset_idx = numpy.arange(row_extent)[:,None]*N + numpy.arange(col_extent)
 
-    # Get all actual indices & index into input array for final output
-    return numpy.take (A,start_idx.ravel()[:,None] + offset_idx.ravel()[::stepsize])
+    return numpy.take (a,start_idx.ravel()[:,None] + offset_idx.ravel()[::stepsize])
 
 """
 Output params:
@@ -54,20 +50,20 @@ def noise_level(img, patchsize = 7, decim = 0, conf = None, itr = 3):
     DD = Dh.conj().transpose().dot(Dh)\
          +Dv.conj().transpose().dot(Dv)
     r = numpy.linalg.matrix_rank(DD)
-    Dtr = DD.trace(offset=0);
-    tau0 = scipy.stats.gamma.ppf(conf,float(r)/2, scale = 2.0 * Dtr / float(r));
+    Dtr = DD.trace(offset=0)
+    tau0 = scipy.stats.gamma.ppf(conf,float(r)/2, scale = 2.0 * Dtr / float(r))
     
     nlevel = []
     th = []
     num = []
     for cha in range(img.shape[2]):
-        X = im2col_sliding_broadcasting(img[:,:,cha],(patchsize, patchsize))
-        Xh = im2col_sliding_broadcasting(imgh[:,:,cha],(patchsize, patchsize-2))
-        Xv = im2col_sliding_broadcasting(imgv[:,:,cha],(patchsize-2, patchsize))
+        X = im2col(img[:,:,cha],(patchsize, patchsize))
+        Xh = im2col(imgh[:,:,cha],(patchsize, patchsize-2))
+        Xv = im2col(imgv[:,:,cha],(patchsize-2, patchsize))
 
         Xtr = numpy.vstack((Xh,Xv)).sum(axis=0)
         if decim > 0:
-            XtrX = numpy.vstack((Xtr,X));
+            XtrX = numpy.vstack((Xtr,X))
             XtrX = sortrows(XtrX.conj().transpose())
             p = math.floor(XtrX.shape[1]/(decim+1))
             p = numpy.array(range(0,p)) * (decim+1)
@@ -147,8 +143,8 @@ def weak_texture_mask(img, th, patchsize=7):
     msk = numpy.zeros(s, float)
     
     for cha in range(0,s[2]):
-        Xh = im2col_sliding_broadcasting(imgh[:,:,cha],(patchsize, patchsize-2))
-        Xv = im2col_sliding_broadcasting(imgv[:,:,cha],(patchsize-2, patchsize))
+        Xh = im2col(imgh[:,:,cha],(patchsize, patchsize-2))
+        Xv = im2col(imgv[:,:,cha],(patchsize-2, patchsize))
 
         Xtr = numpy.vstack((Xh,Xv)).sum(axis=0)
         
