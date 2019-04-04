@@ -39,6 +39,13 @@ $$\pagebreak$$
       2. Fitness
     4. Final EA components (Selection, Crossover & Mutation)
 4. Implementation
+   1. Technologies Used
+      1. Pyhton Libraries
+      2. DEAP
+      3. Jupyter Notebook
+   2. Images
+   3. Weak Texture Patches
+   4. Evaluation Function
 5. Evaluation
 6. Conclusions
 
@@ -260,19 +267,23 @@ $$\pagebreak$$
 
 The student chose to implement the bulk of his project in Python3. Pyhton3 has a lot of supporting libraries to aid in complex maths, image processing and evolutionary algorithms. It's ease of use also allowed for quick prototyping and debugging. This project also uses a virtual environment to manage the various libraries and maintain a standard development environment across machines. Below is a list of the supporting libraries and a brief description of each one:
 
-### 4.1.1 Python Libraries
+#### 4.1.1 Python Libraries
 
 - Numpy: A large library that provides access to N-dimensional arrays with many, fast, supporting functions. THe images used in this project will be stored in numpy arrays. Numpy also contains many useful linear algebra functions which are used to extract the differant texture patches.
 - Scikit-Image: This library implements functions to achieve many common image processing tasks. The main ones this project will use are the denoising filters that were previously mentioned. Functions for getting statistics/analysis from images such as some of the previously mentioned evaluation function. 
 - MatPlotLib: Due to the nature of an image processing project, there is a lot of visual data at each stage. MatPlotLib allows for easy visualisation of data such as the images before and after, and the weak texture mask.
 
-### 4.1.2 Jupyter Notebook
+#### 4.1.2 DEAP 
+
+DEAP(Distributed Evolutionary Algorithms in Python) is a distributed evolutionary algorithm library that implements a lot of the basic functionality of an EA. It runs the EA in parallel, allowing for quicker runtime. Using this library allows the student to experiment and find the most effective/efficient method of returning a result. The library works by creating a fitness goal and an individual with that fitness goal. A data structure, that the individual is stored in, is also provided. Various tools that the EA requires are then registered in a toolbox. Lastly, DEAP contains a function which runs a simple EA that requires the population, toolbox, and other parameters such as the number of generations.
+
+#### 4.1.3 Jupyter Notebook
 
 The student uses a jupyter notebook to implement and test the workflow of the denoising proccess. A jupyter notebook is a self-hosted web app that allows for live-code, visualisations and text fields. It allows quick and easy tweaking of any specific values and quickly seeing the resulting effect. Since it allows for text fields, sections of code are easily documented and the workflow can be easily followed.
 
 ### 4.2 Images
 
-Images from the Berkely segmentation dataset[7] will be used for testing and evaluation purposes. This allows us to ensure our weak texture mask lines up with the human segmented images as the border between rich and weak textures is often a harsh change. The images available in this dataset are also at a reasonable resolution. This prevents the EA run time from becoming too excessive as applying many denoising filters becomes more cumbersome on the CPU as resolution increases.  
+Images from the Berkely segmentation dataset[8] will be used for testing and evaluation purposes. This allows us to ensure our weak texture mask lines up with the human segmented images as the border between rich and weak textures is often a harsh change. The images available in this dataset are also at a reasonable resolution. This prevents the EA run time from becoming too excessive as applying many denoising filters becomes more cumbersome on the CPU as resolution increases.  
 
 The implementation of the dataset object is trivial as it requires a single load images function that accepts the number of images to load and the level of Gaussian noise to add. When images are loaded in, the colour channels are initially in the order of blue, green, red (BGR) while the standard used in display functions is red, green, blue (RGB). Changing the order in this case only requires a reversing of the order of the channels. Python3's list indexing simplifies this as shown below:
 
@@ -308,9 +319,21 @@ Each filter with predetermined paramters is placed in a list of lamda functions 
 
 #### 4.4.2 Applying Denoising Filters
 
+The filter used on each type of texture is applied over a copy of the full image. Initially in the project, the textures were extracted from the image and had the relevant filter applied. This caused neighbouring pixels not in the same texture group to be modified due to the nature of how filters worked. After applying the filters, the weak texture mask is used to extract the weak and rich texured areas. As mentioned earlier, Numpy provides functionality for N-dimensional array manipulation. This allows us to extract the weak texture areas by element-wise multiplication of the weak texture mask and the denoised image. This works as the weak texture mask stores a one in each pixels colour channel if that pixels colour channel is in a weak texture patch. Element-wise subtraction is then used to retrieve the rich textures. Finally, element-wise addition of the two texture types gives us back a full image. Bellow is the code required t implement this:
 
+```python3
+denoised_example_image_weak = filters.gaussian(noisy_image, sigma=2)
+denoised_example_image_rich = restoration.denoise_tv_chambolle(noisy_image, weight=0.005)
 
-#### 
+weak_texture = (denoised_example_image_weak * noisy_image_mask)
+strong_texture = (denoised_example_image_rich - (denoised_example_image_rich * noisy_image_mask))
+
+denoised_image = weak_texture + strong_texture
+```
+
+### 4.5 Evolutionary Algorithm
+
+The previously mentioned DEAP[7] allows the EA to be implemented trivially once the evaluate method has been created. Since the evaluation function the student created here requires the image dataset object to be supplied, a partial application of the evaluate function is created and supplied to the toolbox.
 
 
 
@@ -332,4 +355,6 @@ doi: 10.1109/97.995823
 
 [6] Liu, Xinhao, et al. “Single-Image Noise Level Estimation for Blind Denoising.” IEEE Transactions on Image Processing, vol. 22, no. 12, 2013, pp. 5226–5237., doi:10.1109/tip.2013.2283400.
 
-[7] D. Martin and C. Fowlkes and D. Tal and J. Malik. "A Database of Human Segmented Natural Images and its Application to Evaluating Segmentation Algorithms and Measuring Ecological Statistics." {Proc. 8th Int'l Conf. Computer Vision , July 2001, vol. 2, pp. 416-423.
+[7] Félix-Antoine Fortin, François-Michel De Rainville, Marc-André Gardner, Marc Parizeau and Christian Gagné, “DEAP: Evolutionary Algorithms Made Easy”, Journal of Machine Learning Research, pp. 2171-2175, no 13, jul 2012.
+
+[8] D. Martin and C. Fowlkes and D. Tal and J. Malik. "A Database of Human Segmented Natural Images and its Application to Evaluating Segmentation Algorithms and Measuring Ecological Statistics." {Proc. 8th Int'l Conf. Computer Vision , July 2001, vol. 2, pp. 416-423.
