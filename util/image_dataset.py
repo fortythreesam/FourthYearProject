@@ -32,7 +32,7 @@ class ImageDataset:
             
             self.noisy_images += [noisy_image]
             try:
-                nlevel, th, num = noise_level(noisy_image, conf=0.97)
+                nlevel, th, num = noise_level(noisy_image, conf=0.70)
                 self.noise_levels += [nlevel]
                 new_image_mask = weak_texture_mask(noisy_image,th)
                 self.weak_texture_masks += [new_image_mask]

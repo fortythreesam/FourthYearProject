@@ -13,10 +13,18 @@ def denoise_image(image, action_id):
     
     psf = numpy.ones((5, 5, 3)) / 25
     denoising_filters = [
-        lambda x : (filters.gaussian(x ,sigma=0.5)*255).astype(numpy.uint8),
+        lambda x : (filters.gaussian(x ,sigma=0.05)*255).astype(numpy.uint8),
+        lambda x : (filters.gaussian(x, sigma=0.1)*255).astype(numpy.uint8),
+        lambda x : (filters.gaussian(x, sigma=0.5)*255).astype(numpy.uint8),
         lambda x : (filters.gaussian(x, sigma=1)*255).astype(numpy.uint8),
+        lambda x : (filters.gaussian(x, sigma=1.5)*255).astype(numpy.uint8),
         lambda x : (filters.gaussian(x, sigma=2)*255).astype(numpy.uint8),
         lambda x : (filters.gaussian(x, sigma=3)*255).astype(numpy.uint8),
+        lambda x : (filters.gaussian(x ,sigma=4)*255).astype(numpy.uint8),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.06)*255).astype(numpy.uint8),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.05)*255).astype(numpy.uint8),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.04)*255).astype(numpy.uint8),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.03)*255).astype(numpy.uint8),
         lambda x : (restoration.denoise_tv_chambolle(x, weight=0.02)*255).astype(numpy.uint8),
         lambda x : (restoration.denoise_tv_chambolle(x, weight=0.01)*255).astype(numpy.uint8),
         lambda x : (restoration.denoise_tv_chambolle(x, weight=0.005)*255).astype(numpy.uint8),
@@ -67,10 +75,10 @@ def evaluate(individual, images ,display=False, image_index = 0, performance = p
 def get_denoised_image(individual, images , image_index):
     return excecute_actions(individual, images, image_index)
 
-def run_ea(noise_level = 0.005, pop = 20, generations = 20, evaluation_method = "RMSE", num_other_images = 4, display = False):
+def run_ea(noise_level = 0.005, pop = 20, generations = 10, evaluation_method = "RMSE", num_other_images = 4, display = False):
     
     images = ImageDataset(num_other_images ,noise_level)
-    NUM_FILTERS = 8
+    NUM_FILTERS = 16
     SIZE_OF_INDIVIDUAL = math.ceil(math.log2(NUM_FILTERS**2))
 
     weighting = 0
@@ -105,7 +113,7 @@ def run_ea(noise_level = 0.005, pop = 20, generations = 20, evaluation_method = 
     pop = toolbox.population(n=20)
     algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=20, verbose=False)
     print(tools.selBest(pop, k=1)[0])
-    print(evaluate(tools.selBest(pop, k=1)[0], display))
+    print(evaluate(tools.selBest(pop, k=1)[0], images, display))
     return tools.selBest(pop, k=1)[0], images, noise_level
 
 def compare_results(individual, images, noise_level, display = False):
@@ -132,15 +140,15 @@ def compare_results(individual, images, noise_level, display = False):
             plt.imshow(image_stages_merged)
             plt.show()
         
-        print("Baseline Statistics:")
+        print("Baseline Statistics:", end=" ")
         print_statistics(images.base_images[i], (images.noisy_images[i]*255).astype(numpy.uint8))
-        print("Our Method Statistics:")
+        print("Our Method Statistics:", end=" ")
         print_statistics(images.base_images[i], new_denoised_image)
-        print("Weak Texture Filter Only Statistics:")
+        print("Weak Texture Filter Only Statistics:", end=" ")
         print_statistics(images.base_images[i], new_denoised_image_weak_filter)
-        print("Rich Texture Filter Only Statistics:")
+        print("Rich Texture Filter Only Statistics:", end=" ")
         print_statistics(images.base_images[i], new_denoised_image_rich_filter)
-        print("Standard Gaussian Blur Statistics:")
+        print("Standard Gaussian Blur Statistics:", end=" ")
         print_statistics(images.base_images[i], denoise_image_gaussian_blur)
         
         
