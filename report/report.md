@@ -1,6 +1,6 @@
 # Image denoising using weak texture patches and genetic algorithms
 
-$$\pagebreak$$
+
 
 ## Contents
 
@@ -46,10 +46,14 @@ $$\pagebreak$$
    2. Images
    3. Weak Texture Patches
    4. Evaluation Function
+      1. Individual Decoding and Action Mapping
+      2. Applying Denoising Filters
+   5. Evolutionary Algorithm
+   6. Displaying Results
 5. Evaluation
 6. Conclusions
 
-$$\pagebreak$$
+
 
 ## Abstract
 ___
@@ -61,23 +65,23 @@ ___
 Image denoising is an important process in the fields of computer vision and digital cameras. In this project we explore how applying denoising filters, such as Chambolle’s total vision denoising algorithm and Gaussian blur, to the weak and rich textured area of an image can improve denoising. We use a genetic algorithm to select the filter and parameters that are used for each patch. Using the gradient of each patch in the image and its statistics, we generate the weak texture patches. This gives us a mask of the weak textured areas which we can use to extract the specific pixels needed using matrix multiplication. We can then combine the weak and rich texture patches, after applying the filter, to give us the complete denoised image. The evaluation methods we use are the root mean squared error, peak signal-to-noise ratio, image quality index, and structural similarity index. We tested the model on an image that had a layer of additive white Gaussian noise added. Early results show an improvement in each the previous scores when a different filter is applied to each type of patch over using a single filter on the whole image based on the estimated noise level. This could prove effective when trying to select an optimal filter to use or when trying to optimize the denoising as far as possible.
 
 
-$$\pagebreak$$
+
 
 ## Declaration
 
 
-$$\pagebreak$$
+
 
 ## Acknowledgements
 
 
-$$\pagebreak$$
+
 
 ## List of Figures
 ___
 
 
-$$\pagebreak$$
+
 
 ## Chapter 1
 
@@ -108,7 +112,7 @@ Initially, the project takes in an image and applies a layer of additive white G
 ### 1.4 Achievements
 ___
 
-$$\pagebreak$$
+
 
 ## Chapter 2
 
@@ -126,7 +130,7 @@ Since storage space limits the ability to store large images due to the increasi
 
 The main goal the student will work towards is to visually reduce the effects of noise automatically. Currently, a person looking to denoise an image manually will need to select the filter and parameters themselves. This can be a cumbersome process if they don't understand what is required. Situations like this lead to a lot of trial and error which can be time-consuming. The student hopes to achieve scores in various quality measures that are better than applying simple filters.
 
-This project will focus on additive white Gaussian noise. The main source of this type of noise is during the aquisition stage of the image due to faults in the sensor e.g. the sensors temperature is too high. A standard model for this type of noise is $X = Y + N$ where $X$ is the noisy image, $Y$ is the pure image and $N$ is the layer of additive white gaussian noise. There a various methods already available to reduce this type of noise. Listed here are a few filter types:
+This project will focus on additive white Gaussian noise. The main source of this type of noise is during the aquisition stage of the image due to faults in the sensor e.g. the sensors temperature is too high. A standard model for this type of noise is $X = Y + N$ where $X$ is the noisy image, $Y$ is the pure image and $N$ is the layer of additive white Gaussian noise. There a various methods already available to reduce this type of noise. Listed here are a few filter types:
 
 #### 2.1.2.1 Median Filter
 
@@ -134,7 +138,7 @@ Assigns the median value to the pixel of it and it's neighbours. It requires no 
 
 #### 2.1.2.2 Gaussian Filter
 
-A gaussian filter blurs an image causing a reduction in noise and detail. This is achieved by convolving the image using a gaussian function. The standard deviation of the noise is required.
+A Gaussian filter blurs an image causing a reduction in noise and detail. This is achieved by convolving the image using a Gaussian function. The standard deviation of the noise is required.
 
 #### 2.1.2.3 Chambolle's Total Variation Filter 
 
@@ -148,11 +152,11 @@ Estimates the desired target image by applying a linear time-invarient filter to
 
 A weakly textured patch in an image is found where a cluster of pixels contains similar values to each other. Examples of this in natural images would be a wall or a clear sky. These patches are useful in noise estimation as it's easy to detect a disturbance. The main issue with this is the difficulty of detecting weak texture patches in noisy images as the noise variance causes pixel values to vary more.
 
-Liu, Xinhao, et al.[6] propose a method to estimate noise levels of additive white Gaussian noise by analysing weak texture patches in an image. They also show a method for generating a mask of the weak texture patches in an image. The method they propose analyses statistics from the gradient covariance matrix of each patch. The process looks for what is expected in a weak texture patch after a layer of noise has affected the image. It then estimates a threshold such that a patch is weakly textured if the maximum eigenvalue of it's gradient covariance matrix falls below the threshold. This gives a matrix, with the same shape as the image, where there is a one at each position if that pixel is part of a weakly textured patch. The rest of the matrix contains zeros indicating the pixels that are part of richly textured patches. 
+Liu, Xinhao, et al.[6] propose a method to estimate noise levels of additive white Gaussian noise by analysing weak texture patches in an image. They also show a method for generating a mask of the weak texture patches in an image. The method they propose analyses statistics from the gradient covariance matrix of each patch. The process looks for what is expected in a weak texture patch after a layer of noise has affected the image. It then estimates a threshold such that a patch is weakly textured if the maximum eigenvalue of its gradient covariance matrix falls below the threshold. This gives a matrix, with the same shape as the image, where there is a one at each position if that pixel is part of a weakly textured patch. The rest of the matrix contains zeros indicating the pixels that are part of richly textured patches. 
 
 ### 2.2 Evolutionary Algorithms
 
-Evolutionary algorithms(EA) attempt to mimic the process of natural evolution. Sistinct components work together to emulate this process in some manner. At the most basic level, an EA will maintain a population of individuals, evaluate the effectiveness of each individual using a fitness function, and create the population of the next generation. It repeats this step for a number of generations until an optimal solution is found. After the final generation, the EA will return the overall best-performing individual as a solution. This solution is optimized to the given fitness function. It is ideal when finding solutions to problems without making assumptions about the optimal result. In particular, it is useful in this project as it allows us to search for an optimal pair of denoising filters to use on each of the texture patch types. It also allows for easy and rapid expansion of the filters/parameter combinations being used. Below is a more detailed summary of the elements in an EA:
+Evolutionary algorithms(EA) attempt to mimic the process of natural evolution. Distinct components work together to emulate this process in some manner. At the most basic level, an EA will maintain a population of individuals, evaluate the effectiveness of each individual using a fitness function, and create the population of the next generation. It repeats this step for a number of generations until an optimal solution is found. After the final generation, the EA will return the overall best-performing individual as a solution. This solution is optimized to the given fitness function. It is ideal when finding solutions to problems without making assumptions about the optimal result. In particular, it is useful in this project as it allows us to search for an optimal pair of denoising filters to use on each of the texture patch types. It also allows for easy and rapid expansion of the filters/parameter combinations being used. Below is a more detailed summary of the elements in an EA:
 
 #### 2.2.1 Individual & Population
 
@@ -168,7 +172,7 @@ There are a number of different techniques for the selection of individuals that
 
 ### 2.3 Evaluation Metrics
 
-As shown above, we have four methods of evaluating the effectiveness of a denoising filter. The main reason for this is that the EA optimizes the result based on the fitness function. One of the above metrics will be used as a the fitness function and we use the others to analyse it's effectiveness in other areas.
+As shown above, we have four methods of evaluating the effectiveness of a denoising filter. The main reason for this is that the EA optimizes the result based on the fitness function. One of the above metrics will be used as the fitness function, and then use the others to analyse its effectiveness in other areas.
 
 #### 2.3.1 Root Mean Squared Error (RMSE)
 
@@ -182,7 +186,7 @@ where $x$ and $y$ are the original image and the denoised image and $M$ and $N$ 
 
 #### 2.3.2 Peak Signal To Noise Ratio (PSNR)
 
-The PSNR is used as a quality measure when evaluating images. It represents the ratio between the average diference in pixel values and the maximum possible signal. It's particularly useful due to its low complexity which suits it's use as a fitness function.
+The PSNR is used as a quality measure when evaluating images. It represents the ratio between the average difference in pixel values and the maximum possible signal. It's particularly useful due to its low complexity which suits its use as a fitness function.
 
 $$PSNR = 10\log_{10}{{(2^n - 1)^2}\over{\sqrt{MSE}}}$$
 
@@ -200,7 +204,7 @@ $$\bar x = {1\over N}\sum^N_{i=1} x_i$$
 
 $$\bar y = {1\over N}\sum^N_{i=1} y_i$$
 
-$$\sigma^2_x = {1 \over N - 1} \sum^N_{i=1}(x_i-\bar x)^2$$
+$$\sigma^2_x = {1 \over N - 1}\sum^N_{i=1}(x_i-\bar x)^2$$
 
 $$\sigma^2_y = {1 \over N - 1} \sum^N_{i=1}(y_i-\bar y)^2$$
 
@@ -208,7 +212,7 @@ $$\sigma_{xy} = {1 \over N - 1} \sum^N_{i=1}(x_i-\bar x)(y_i-\bar y)$$
 
 #### 2.3.4 Structural Similarity Index Metric SSIM
 
-SSIM is another metric that returns a result based on the luminance, contrast, and structural difference between the two images. While other metrics such as RMSE are purely a mathematical measure, SSIM gives us an idea of the percieved quality of the resulting image. A measure like this is useful in fields such as digital cameras where mathematical accuracy does not matter to the end user.[5] 
+SSIM is another metric that returns a result based on the luminance, contrast, and structural difference between the two images. While other metrics such as RMSE are purely a mathematical measure, SSIM gives us an idea of the perceived quality of the resulting image. A measure like this is useful in fields such as digital cameras where mathematical accuracy does not matter to the end user.[5] 
 
 $$SSIM = {(2*\bar x * \bar y + C_1)(2*\sigma_{xy} + C_2) \over (\sigma^2_x + \sigma^2_y + C_2)*((\bar{x})^2 + (\bar{y})^2 + C_1)}$$
 
@@ -222,7 +226,7 @@ $k_1 = 0.01$ and $k_2 = 0.03$ by default.
 
 ___
 
-$$\pagebreak$$
+
 
 ## Chapter 3
 
@@ -230,15 +234,15 @@ $$\pagebreak$$
 
 ### 3.1 Design Overview
 
-As shown in the previous section, the main design for this project is split across the various aspects required to build an EA. The bulk of the work will be in implementing the evaluate function. The student will use python and a number of supporting libraries in order to achieve this. Prior to the EA running, the image dataset is generated.
+As shown in the previous section, the main design for this project is split across the various aspects required to build an EA. The bulk of the work will be in implementing the evaluate function. The student will use python and a number of supporting libraries in order to achieve this. Prior to the EA running, the image data set is generated.
 
 ### 3.2 Image Dataset
 
-The image dataset is held in a custom object. It will maintain a copy of the original image, the noisy image and the weak texture patch mask. Since the generation of the weak texture patch also estimates the noise level it stores this as well to use when evaluating the result. It also provides functionality to reload the dataset and set the level of noise that's applied. 
+The image data set is held in a custom object. It will maintain a copy of the original image, the noisy image and the weak texture patch mask. Since the generation of the weak texture patch also estimates the noise level it stores this as well to use when evaluating the result. It also provides functionality to reload the data set and set the level of noise that's applied. 
 
 ### 3.3 The Evaluate Function
 
-This step in the EA comprises of 3 basic steps. Firstly, it takes the individual bit string and decodes it, mapping it to the actions required to be taken out. Next, the denoising filters are applied to copies of the noisy image. The texture patches are extracted using the mask that was previously generated. The extracted denoised images are then recombined to give the full image. Finally, the third step is to return a value as the fitness of the individual. This function will be one of the four evaluation functions outlined previously. Doing this allows for experimentation with optimizing the result to different evaluation metrics.
+This step in the EA comprises 3 basic steps. Firstly, it takes the individual bit string and decodes it, mapping it to the actions required to be taken out. Next, the denoising filters are applied to copies of the noisy image. The texture patches are extracted using the mask that was previously generated. The extracted denoised images are then recombined to give the full image. Finally, the third step is to return a value as the fitness of the individual. This function will be one of the four evaluation functions outlined previously. Doing this allows for experimentation with optimizing the result to different evaluation metrics.
 
 #### 3.3.1 Individual Decoding
 
@@ -250,14 +254,14 @@ This step in the evaluation function is the most important as the effectiveness 
 
 #### 3.3.3 Fitness 
 
-The image dataset generated above retains the original, untouched, image. The denoised image and the original image are put into one of the fitness functions mentioned above. This is set by the user but uses RMSE by default. The EA will optimize for the lowest possible RMSE score but optimise for the highest score if PSNR, IQI, or SSIM are used.
+The image data set generated above retains the original, untouched, image. The denoised image and the original image are put into one of the fitness functions mentioned above. This is set by the user but uses RMSE by default. The EA will optimize for the lowest possible RMSE score but optimise for the highest score if PSNR, IQI, or SSIM are used.
 
 ### 3.4 Final EA components (Selection, Crossover & Mutation)
 
-This project uses a simple tournament selection as a means to pick the individuals used in the crossover. Since individuals comprise of two decisions, a single point crossover is used. For each pair of individuals, a new pair is created such that the first individual is made up from the first half of one parent, and the second half of the other. The second individual is then created using the remaining parts of the parents. As for the mutation step, each individual will have a 20% chance to have one of their bits flipped.
+This project uses a simple tournament selection as a means to pick the individuals used in the crossover. Since individuals consist of two decisions, a single point crossover is used. For each pair of individuals, a new pair is created such that the first individual is made up from the first half of one parent, and the second half of the other. The second individual is then created using the remaining parts of the parents. As for the mutation step, each individual will have a 20% chance to have one of their bits flipped.
 ___
 
-$$\pagebreak$$
+
 
 ## Chapter 4
 
@@ -265,27 +269,27 @@ $$\pagebreak$$
 
 ### 4.1 Technologies Used
 
-The student chose to implement the bulk of his project in Python3. Pyhton3 has a lot of supporting libraries to aid in complex maths, image processing and evolutionary algorithms. It's ease of use also allowed for quick prototyping and debugging. This project also uses a virtual environment to manage the various libraries and maintain a standard development environment across machines. Below is a list of the supporting libraries and a brief description of each one:
+The student chose to implement the bulk of his project in Python3. Pyhton3 has a lot of supporting libraries to aid in complex math, image processing and evolutionary algorithms. It's ease of use also allowed for quick prototyping and debugging. This project also uses a virtual environment to manage the various libraries and maintain a standard development environment across machines. Below is a list of the supporting libraries and a brief description of each one:
 
 #### 4.1.1 Python Libraries
 
-- Numpy: A large library that provides access to N-dimensional arrays with many, fast, supporting functions. THe images used in this project will be stored in numpy arrays. Numpy also contains many useful linear algebra functions which are used to extract the differant texture patches.
+- Numpy: A large library that provides access to N-dimensional arrays with many, fast, supporting functions. The images used in this project will be stored in numpy arrays. Numpy also contains many useful linear algebra functions which are used to extract the differant texture patches.
 - Scikit-Image: This library implements functions to achieve many common image processing tasks. The main ones this project will use are the denoising filters that were previously mentioned. Functions for getting statistics/analysis from images such as some of the previously mentioned evaluation function. 
 - MatPlotLib: Due to the nature of an image processing project, there is a lot of visual data at each stage. MatPlotLib allows for easy visualisation of data such as the images before and after, and the weak texture mask.
 
 #### 4.1.2 DEAP 
 
-DEAP(Distributed Evolutionary Algorithms in Python) is a distributed evolutionary algorithm library that implements a lot of the basic functionality of an EA. It runs the EA in parallel, allowing for quicker runtime. Using this library allows the student to experiment and find the most effective/efficient method of returning a result. The library works by creating a fitness goal and an individual with that fitness goal. A data structure, that the individual is stored in, is also provided. Various tools that the EA requires are then registered in a toolbox. Lastly, DEAP contains a function which runs a simple EA that requires the population, toolbox, and other parameters such as the number of generations.
+DEAP(Distributed Evolutionary Algorithms in Python) is a distributed evolutionary algorithm library that implements a lot of the basic functionality of an EA. It runs the EA in parallel, allowing for quicker run time. Using this library allows the student to experiment and find the most effective/efficient method of returning a result. The library works by creating a fitness goal and an individual with that fitness goal. A data structure, that the individual is stored in, is also provided. Various tools that the EA requires are then registered in a toolbox. Lastly, DEAP contains a function which runs a simple EA that requires the population, toolbox, and other parameters such as the number of generations.
 
 #### 4.1.3 Jupyter Notebook
 
-The student uses a jupyter notebook to implement and test the workflow of the denoising proccess. A jupyter notebook is a self-hosted web app that allows for live-code, visualisations and text fields. It allows quick and easy tweaking of any specific values and quickly seeing the resulting effect. Since it allows for text fields, sections of code are easily documented and the workflow can be easily followed.
+The student uses a jupyter notebook to implement and test the workflow of the denoising process. A jupyter notebook is a self-hosted web app that allows for live-code, visualisations and text fields. It allows quick and easy tweaking of any specific values and quickly seeing the resulting effect. Since it allows for text fields, sections of code are easily documented and the workflow can be easily followed.
 
 ### 4.2 Images
 
-Images from the Berkely segmentation dataset[8] will be used for testing and evaluation purposes. This allows us to ensure our weak texture mask lines up with the human segmented images as the border between rich and weak textures is often a harsh change. The images available in this dataset are also at a reasonable resolution. This prevents the EA run time from becoming too excessive as applying many denoising filters becomes more cumbersome on the CPU as resolution increases.  
+Images from the Berkely segmentation data set[8] will be used for testing and evaluation purposes. This allows us to ensure our weak texture mask lines up with the human segmented images as the border between rich and weak textures is often a harsh change. The images available in this data set are also at a reasonable resolution. This prevents the EA run time from becoming too excessive as applying many denoising filters becomes more cumbersome on the CPU as resolution increases.  
 
-The implementation of the dataset object is trivial as it requires a single load images function that accepts the number of images to load and the level of Gaussian noise to add. When images are loaded in, the colour channels are initially in the order of blue, green, red (BGR) while the standard used in display functions is red, green, blue (RGB). Changing the order in this case only requires a reversing of the order of the channels. Python3's list indexing simplifies this as shown below:
+The implementation of the data set object is trivial as it requires a single load images function that accepts the number of images to load and the level of Gaussian noise to add. When images are loaded in, the colour channels are initially in the order of blue, green, red (BGR) while the standard used in display functions is red, green, blue (RGB). Changing the order in this case only requires a reversing of the order of the channels. Python3's list indexing simplifies this as shown below:
 
 ```python3
 new_image = new_image[:,:,::-1]
@@ -293,36 +297,36 @@ new_image = new_image[:,:,::-1]
 
 ### 4.3 Weak Texture Patches
 
-
+The implementation to generate the weak texture patch mask consisted mainly of following the method described by Liu, Xinhao, et al.[6] The functionality provided by Numpy allowed for easy access to complex linear algebra computations such as retrieving the eigenvalues of each patches' covariance matrices. Numpy also makes matrix manipulation simple with powerful indexing techniques and supporting functions. Similarly, Scikit-image provides the functionality required to analyse the patches' statistics such as retrieving the vertical and horizontal correlation of an image.
 
 ### 4.4 Evaluation Function 
 
-The evaluation function requires two parameters to be given, the individual, and the image dataset to be used. There are also three optional parameters that can be set. One of these is a curried performance function that takes two images and returns a number. This allows us to define a generic evaluate function that can be changed depending on which metric it is optimizing towards. There is also the option to display the image at each stage of the denoising (original image, noisy image and denoised image).  This is false by default due to the frequency that this function gets called during the running of the EA.
+The evaluation function requires two parameters to be given, the individual, and the image data set to be used. There are also three optional parameters that can be set. This function is designed to be a higher order function which takes a performance function that requires two images and returns a number. This allows us to define a generic evaluate function that can be changed depending on which metric it is optimizing towards. There is also the option to display the image at each stage of the denoising (original image, noisy image and denoised image).  This is false by default due to the frequency that this function gets called during the running of the EA.
 
 #### 4.4.1 Individual Decoding and Action Mapping
 
-Individuals are passed into the evaluation function as a Python list of ones and zeros. A list comprehension is used to converts each half into an int which maps to the filter to be used.
+Individuals are passed into the evaluation function as a Python list of ones and zeros. A list comprehension is used to convert each half into an int which maps to the filter to be used.
 
 """python3
 def bits_to_int(bit_list):
     return sum([(x*(2**i)) for i, x in enumerate(bit_list[::-1])])
 """
 
-Each filter with predetermined paramters is placed in a list of lamda functions that take in a single argument and return a denoised image. This allows the denoising process to call a position in the list as a function with one argument. Functionality like this is particularily helpful as it lets a user expand or reduce the number/types of filters used easily without worrying about breaking functionality. Below is a short example of this with two entries:
+Each filter with predetermined parameters is placed in a list of lamda functions that take in a single argument and return a denoised image. This allows the denoising process to call a position in the list as a function with one argument. Functionality like this is particularly helpful as it lets a user expand or reduce the number/types of filters used easily without worrying about breaking functionality. Below is a short example of this with two entries:
 
 """python3
     denoising_filters = [
-        lambda x : (filters.gaussian(x ,sigma=1)*255).astype(numpy.uint8),
+        lambda x : (filters.Gaussian(x ,sigma=1)*255).astype(numpy.uint8),
         lambda x : (restoration.denoise_tv_chambolle(x, weight=0.01)*255).astype(numpy.uint8),
     ]
 """
 
 #### 4.4.2 Applying Denoising Filters
 
-The filter used on each type of texture is applied over a copy of the full image. Initially in the project, the textures were extracted from the image and had the relevant filter applied. This caused neighbouring pixels not in the same texture group to be modified due to the nature of how filters worked. After applying the filters, the weak texture mask is used to extract the weak and rich texured areas. As mentioned earlier, Numpy provides functionality for N-dimensional array manipulation. This allows us to extract the weak texture areas by element-wise multiplication of the weak texture mask and the denoised image. This works as the weak texture mask stores a one in each pixels colour channel if that pixels colour channel is in a weak texture patch. Element-wise subtraction is then used to retrieve the rich textures. Finally, element-wise addition of the two texture types gives us back a full image. Bellow is the code required t implement this:
+The filter used on each type of texture is applied over a copy of the full image. Initially in the project, the textures were extracted from the image and had the relevant filter applied. This caused neighbouring pixels not in the same texture group to be modified due to the nature of how filters worked. After applying the filters, the weak texture mask is used to extract the weak and rich textured areas. As mentioned earlier, Numpy provides functionality for N-dimensional array manipulation. This allows us to extract the weak texture areas by element-wise multiplication of the weak texture mask and the denoised image. This works as the weak texture mask stores a one in each pixels' colour channel if that pixels' colour channel is in a weak texture patch. Element-wise subtraction is then used to retrieve the rich textures. Finally, element-wise addition of the two texture types gives us back a full image. Below is the code required t implement this:
 
 ```python3
-denoised_example_image_weak = filters.gaussian(noisy_image, sigma=2)
+denoised_example_image_weak = filters.Gaussian(noisy_image, sigma=2)
 denoised_example_image_rich = restoration.denoise_tv_chambolle(noisy_image, weight=0.005)
 
 weak_texture = (denoised_example_image_weak * noisy_image_mask)
@@ -333,10 +337,41 @@ denoised_image = weak_texture + strong_texture
 
 ### 4.5 Evolutionary Algorithm
 
-The previously mentioned DEAP[7] allows the EA to be implemented trivially once the evaluate method has been created. Since the evaluation function the student created here requires the image dataset object to be supplied, a partial application of the evaluate function is created and supplied to the toolbox.
+The previously mentioned library, DEAP[7], allows a trivial implementation of the EA once the evaluate method has been created. Since the evaluation function which the student created here requires the image data set object as a parameter, a partial application of the evaluate function is created and given to the toolbox. At the same time, if another fitness metric has been selected, the relevant evaluation function is given as well. Only the RMSE result is aiming for a minimised value so the fitness goal for individuals is set here as well. This allows the student to create a function that runs the whole EA and return the best performing individual. The function can then have its parameters easily tweaked in order to test a wide variety of results in a quick and efficient manner. 
 
+```python3
+def run_ea(noise_level = 0.005, pop = 20, generations = 20, evaluation_method = "RMSE", num_other_images = 4):
+    
+    images = ImageDataset(num_other_images ,noise_level)
+    NUM_FILTERS = 8
+    SIZE_OF_INDIVIDUAL = math.ceil(math.log2(NUM_FILTERS**2))
 
+    weighting = 0
+    if evaluation_method == "RMSE":
+        evaluation = lambda i : evaluate(i, images)
+        weighting = -1.0
+        individual_fitness = creator.FitnessMin
+    else:
+        weighting = 1.0
+        individual_fitness = creator.FitnessMax
+        if evaluation_method == "PSNR":
+            evaluation = lambda i : evaluate(i, images, performance=performance_functions.peak_signal_noise_ratio)
+        elif evaluation_method == "IQI":
+            evaluation = lambda i : evaluate(i, images, performance=performance_functions.image_quality_index)
+        elif evaluation_method == "SSIM":
+            evaluation = lambda i : evaluate(i, images, performance=performance_functions.structural_similarity_indix)
 
+    creator.create("FitnessMin", base.Fitness, weights=(weighting,))
+    creator.create("Individual", list, fitness=individual_fitness)
+    ... (setting up the toolbox)
+    algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=20, verbose=False)
+    ... (displaying information)
+    return tools.selBest(pop, k=1)[0]
+```
+
+### 4.6 Displaying Results
+
+Using the aforementioned jupyter notebook, the student runs example versions of the above implementation steps individually in order to refine the process. The student also runs the various tests on different input parameters such as varying level of noises, swapping the evaluation metric, size of population and number of generations. It also allows the option of displaying the image at various stages of the denoising process. It requires an individual to be supplied along with the image data object and the noise level. The filters that this individual maps to are tested on the unseen images in and the resulting metrics a printed.   
 
 
 

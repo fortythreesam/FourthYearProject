@@ -67,7 +67,7 @@ def evaluate(individual, images ,display=False, image_index = 0, performance = p
 def get_denoised_image(individual, images , image_index):
     return excecute_actions(individual, images, image_index)
 
-def run_ea(noise_level = 0.005, pop = 20, generations = 20, evaluation_method = "RMSE", num_other_images = 4):
+def run_ea(noise_level = 0.005, pop = 20, generations = 20, evaluation_method = "RMSE", num_other_images = 4, display = False):
     
     images = ImageDataset(num_other_images ,noise_level)
     NUM_FILTERS = 8
@@ -105,13 +105,15 @@ def run_ea(noise_level = 0.005, pop = 20, generations = 20, evaluation_method = 
     pop = toolbox.population(n=20)
     algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=20, verbose=False)
     print(tools.selBest(pop, k=1)[0])
-    print(evaluate(tools.selBest(pop, k=1)[0], True))
-    compare_results(tools.selBest(pop, k=1)[0], images, noise_level)
+    print(evaluate(tools.selBest(pop, k=1)[0], display))
+    return tools.selBest(pop, k=1)[0], images, noise_level
 
-def compare_results(individual, images, noise_level):
-    test_image = evaluate(individual, images, 0)
-    for i in range(1,4):
-        print("Evaluation of unseen image %d:\n"%(i))
+def compare_results(individual, images, noise_level, display = False):
+    for i in range(0,len(images.base_images)):  
+        if i == 0:
+            print("Evaluation of image ea was run on")
+        else:
+            print("Evaluation of unseen image %d:\n"%(i))
         new_denoised_image = get_denoised_image(individual, images, i)
         new_denoised_image_weak_filter = get_denoised_image(\
                                             individual[:len(individual)//2] + individual[:len(individual)//2],
@@ -119,20 +121,25 @@ def compare_results(individual, images, noise_level):
         new_denoised_image_rich_filter = get_denoised_image(\
                                             individual[len(individual)//2:] + individual[len(individual)//2:],
                                             images, i)
-        denoise_image_gaussian_blur = (filters.gaussian(images.noisy_images[i], sigma= noise_level*2 ) * 255).astype(numpy.uint8)
-        image_stages_merged = numpy.hstack((images.base_images[i], images.weak_texture_masks[i], new_denoised_image))
-        plt.title("Original Image(Left) | Weak Texture Mask | Denoised Image")
-        plt.imshow(image_stages_merged)
-        plt.show()
+        denoise_image_gaussian_blur = (filters.gaussian(images.noisy_images[i], sigma= images.noise_levels[i][0]) * 255).astype(numpy.uint8)
+
+        if display:
+            image_and_wtm = numpy.hstack((images.base_images[i], images.weak_texture_masks[i]*255)).astype(numpy.uint8)
+            noisy_and_denoised_image = numpy.hstack((images.noisy_images[i]*255, new_denoised_image)).astype(numpy.uint8)
+            image_stages_merged = numpy.vstack((image_and_wtm,noisy_and_denoised_image))
+            plt.rcParams["figure.figsize"]=20,20
+            plt.title("Original Image(Left) | Weak Texture Mask | Denoised Image")
+            plt.imshow(image_stages_merged)
+            plt.show()
         
         print("Baseline Statistics:")
-        print_statistics(images.base_images[i], images.noisy_images[i])
+        print_statistics(images.base_images[i], (images.noisy_images[i]*255).astype(numpy.uint8))
         print("Our Method Statistics:")
         print_statistics(images.base_images[i], new_denoised_image)
         print("Weak Texture Filter Only Statistics:")
         print_statistics(images.base_images[i], new_denoised_image_weak_filter)
         print("Rich Texture Filter Only Statistics:")
-        print_statistics(images.base_images[i], new_denoised_image)
+        print_statistics(images.base_images[i], new_denoised_image_rich_filter)
         print("Standard Gaussian Blur Statistics:")
         print_statistics(images.base_images[i], denoise_image_gaussian_blur)
         

@@ -12,7 +12,7 @@ def im2col(a, block_size, stepsize=1):
 
     offset_idx = numpy.arange(row_extent)[:,None]*N + numpy.arange(col_extent)
 
-    return numpy.take (a,start_idx.ravel()[:,None] + offset_idx.ravel()[::stepsize])
+    return numpy.take(a,start_idx.ravel()[:,None] + offset_idx.ravel()[::stepsize])
 
 """
 Output params:
@@ -39,8 +39,8 @@ def noise_level(img, patchsize = 7, decim = 0, conf = None, itr = 3):
     imgh = imgh[:,1:len(imgh[1])-1,:]
     imgh = numpy.multiply(imgh, imgh)
     
-    kv = numpy.array([[[-1/2]],[[0]],[[1/2]]])
-    imgv = scipy.ndimage.correlate(img, kv, mode="nearest")
+    kv = kh[0,:,None]
+    imgv = scipy.ndimage.correlate(img, kv, mode="nearest") 
     imgv = imgv[1:len(imgv)-1,:,:]
     imgv = numpy.multiply(imgv, imgv)
     
