@@ -80,15 +80,14 @@ def run_ea(noise_level = 0.005, pop = 20, generations = 10, evaluation_method = 
     images = ImageDataset(num_other_images ,noise_level)
     NUM_FILTERS = 16
     SIZE_OF_INDIVIDUAL = math.ceil(math.log2(NUM_FILTERS**2))
+    
 
     weighting = 0
     if evaluation_method == "RMSE":
         evaluation = lambda i : evaluate(i, images)
         weighting = -1.0
-        individual_fitness = creator.FitnessMin
     else:
         weighting = 1.0
-        individual_fitness = creator.FitnessMax
         if evaluation_method == "PSNR":
             evaluation = lambda i : evaluate(i, images, performance=performance_functions.peak_signal_noise_ratio)
         elif evaluation_method == "IQI":
@@ -96,8 +95,8 @@ def run_ea(noise_level = 0.005, pop = 20, generations = 10, evaluation_method = 
         elif evaluation_method == "SSIM":
             evaluation = lambda i : evaluate(i, images, performance=performance_functions.structural_similarity_indix)
 
-    creator.create("FitnessMin", base.Fitness, weights=(weighting,))
-    creator.create("Individual", list, fitness=individual_fitness)
+    creator.create("Fitness", base.Fitness, weights=(weighting,))
+    creator.create("Individual", list, fitness=creator.Fitness)
 
 
     toolbox = base.Toolbox()
@@ -129,7 +128,7 @@ def compare_results(individual, images, noise_level, display = False):
         new_denoised_image_rich_filter = get_denoised_image(\
                                             individual[len(individual)//2:] + individual[len(individual)//2:],
                                             images, i)
-        denoise_image_gaussian_blur = (filters.gaussian(images.noisy_images[i], sigma= images.noise_levels[i][0]) * 255).astype(numpy.uint8)
+        denoise_image_gaussian_blur = (filters.gaussian(images.noisy_images[i], noise_level*10) * 255).astype(numpy.uint8)
 
         if display:
             image_and_wtm = numpy.hstack((images.base_images[i], images.weak_texture_masks[i]*255)).astype(numpy.uint8)
