@@ -109,6 +109,14 @@ $$\pagebreak$$
 
 ## Acknowledgements
 
+Firstly, I would like to thank Dr. John Mullane for his help and guidence in this project. I am especially thankful for the opportunity to learn about this field of computer science. It has given me an appreciation for the areas of image processing, linear algebra and how they work together to achieve things efficiently.
+
+I'm very thankful to my family for always being here for me and supporting me throughout my whole life. Especially my parents who have always done everything they can to ensure that I am happy.
+
+Finally, I would also like to thank my friends who have the whole process more enjoyable. In many ways they have inspired me to keep challenging myself and improve in any area I can. Also to everyone in Netsoc who have mativated me through the work they do in and out of the society.
+
+
+
 
 $$\pagebreak$$
 
@@ -453,7 +461,7 @@ To test the method for denoising and ensure that it produces a whole image, the 
 
 #### 5.3.1 Testing Results Overview
 
-In total, 7 tests are carried out on this process. Each test runs three times and the filters selected by the EA are tested on three other images that have a similar level of noise applied to them. What we are looking for here is if the EA finds a single filter to be more effective over using a different(or the same with differrent parameters) one for each texture type. Finally the result is compared to just using a guassian blur based on the noise level applied previously.
+In total, 7 tests are carried out on this process. All tests are run on jpeg images from the Berkely segmentation data set[8]. Each test runs three times and the filters selected by the EA are tested on three other images that have a similar level of noise applied to them. What we are looking for here is if the EA finds a single filter to be more effective over using a different(or the same with differrent parameters) one for each texture type. Finally the result is compared to just using a guassian blur based on the noise level applied previously. For the first test the student goes in depth into the processes results in each area. For subsequant tests, summaries and the most significant results are shown.
 
 Denoising Method Index:
 
@@ -473,6 +481,9 @@ Input parameters for the first test:
 | --- | --- | --- | --- |
 | 0.005 | 20 | 10 | RMSE |
 
+![](images/5.3.1.1.1.png)
+*Fig e. Image used in Ea at various stages. Original Image (Top left), Weak Texture Mask (Top Right), Noisy Image(Bottom Left), Denoised Image(Bottom Right)*
+
 Results First Execution:
 
 | Filter For Weak Texture | Filter For Rich Texture |
@@ -489,7 +500,7 @@ Image EA was run on:
 | 4 | 14.628030 | 29.598299 | 0.999425 | **0.828667** |
 | 5 | 29.643997 | 23.463281 | 0.997662 | 0.477144 |
 
-Unseen Image No.1 EA was run on:
+Unseen Image No.1:
 
 | Denoising Method | RMSE | PSNR | IQI | SSIM |
 | --- | --- | --- | --- | --- |
@@ -499,13 +510,82 @@ Unseen Image No.1 EA was run on:
 | 4 | 15.658412 | 29.007062 | 0.993755 | **0.855345** |
 | 5 | 27.158534 | 24.223890 | 0.983654 | 0.447596 |
 
+Unseen Image No.2:
 
-Results for Other Executions:
+| Denoising Method | RMSE | PSNR | IQI | SSIM |
+| --- | --- | --- | --- | --- |
+| 1 | 29.116240 | 23.619310 | 0.996858 | 0.723112 | 
+| 2 | **22.834092** | **25.730341** | 0.998040 | 0.861268 |
+| 3 | 48.165222 | 19.247345 | 0.991265 | 0.692436 |
+| 4 | 22.849559 | 25.724460 | **0.998044** | **0.876741** |
+| 5 | 28.404125 | 23.834388 | 0.997007 | 0.728445 |
+
+Unseen Image No.3:
+
+| Denoising Method | RMSE | PSNR | IQI | SSIM |
+| --- | --- | --- | --- | --- |
+| 1 | 30.906820 | 23.100930 | 0.996291 | 0.324265 | 
+| 2 | **13.776044** | **30.119526** | **0.999259** | 0.752554 |
+| 3 | 14.274137 | 29.811019 | 0.999205 | 0.761613 |
+| 4 | 16.111993 | 28.759031 | 0.998985 | **0.777737** |
+| 5 | 30.035167 | 23.349415 | 0.996496 | 0.333437 |
+
+From the results shown here, the EA chose a different filter to use on each texture type. This method makes an improvement in the RMSE and PSNR on all four images which shows that results are not only positive due to running the EA on a specific image. In all cases however, a better SSIM is achieved from just using the second filter. This could be due to the fact the EA optimizes towards the RMSE. Shown further down (in the seventh test) is the results when optimizing towards SSIM. These results also show that using the same set of filters across other images with the same noise levels provides a consistenly effective result.
+
+Other Executions:
 
 | Execution | Filter For Weak Texture | Filter For Rich Texture |
 | --- | --- | --- |
-|  |  |  |
+| 2 | Gaussian Blur with Sigma = 1 | Gaussian Blur with Sigma = 1 |
+| 3 | Gaussian Blur with Sigma = 1.5 | Chambolle TV Filter with Weight = 0.04 |
 
+
+In the second execution of the process under the above conditions, only one filter is used over the whole image. This shows us that using seperate filters on each texture type isn't always the most effective way to denoise an image. This still shows the effectiveness of using an EA to find which filter to use. There is an average improvement of 12.516240 in the RMSE and an increase of 0.337282 in the SSIM across all four images.
+
+##### 5.3.1.2 Second Test
+
+| Noise Level | Population | Generations | Evaluations Metric | 
+| --- | --- | --- | --- |
+| 0.01 | 20 | 10 | RMSE |
+
+Tests on higher levels of noise are carried out in order to see if it is still a viable option. One reason it might become less viable is due to the nature of weak texture patch selection becoming less accurate the higher the noise level.
+
+##### 5.3.1.3 Third Test 
+
+| Noise Level | Population | Generations | Evaluations Metric | 
+| --- | --- | --- | --- |
+| 0.02 | 20 | 10 | RMSE |
+
+The noise applied here is quite extreme and is unlikely to occur naturally. The weak texture become very ambiguous here and causes much more of the image to fall below the threshold required to be selected as a weak texture patch.
+
+![](images/5.3.1.3.1.png)
+*Fig f. Noisy image used in this test*
+
+##### 5.3.1.4 Fourth Test 
+
+This is the final test in which we modify the noise level. Here we are checking to see if a lower level of noise (although still noticeable to the human eye) can be more optimally denoised using separate filters.
+
+| Noise Level | Population | Generations | Evaluations Metric | 
+| --- | --- | --- | --- |
+| 0.001 | 20 | 10 | RMSE | 
+
+##### 5.3.1.5 Fifth Test 
+
+| Noise Level | Population | Generations | Evaluations Metric | 
+| --- | --- | --- | --- |
+| 0.005 | 20 | 10 | PSNR | 
+
+##### 5.3.1.6 Sixth Test 
+
+| Noise Level | Population | Generations | Evaluations Metric | 
+| --- | --- | --- | --- |
+| 0.005 | 20 | 10 | IQI | 
+
+##### 5.3.1.7 Seventh Test 
+
+| Noise Level | Population | Generations | Evaluations Metric | 
+| --- | --- | --- | --- |
+| 0.005 | 20 | 10 | SSIM | 
 
 ### 5.4 Problems
 
