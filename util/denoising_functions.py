@@ -4,6 +4,7 @@ import math
 import random
 from deap import algorithms, base, creator, tools
 from skimage import data, io, filters, restoration
+from scipy import signal
 from matplotlib import pyplot as plt
 from util import performance_functions
 from util.image_dataset import ImageDataset
@@ -13,22 +14,22 @@ def denoise_image(image, action_id):
     
     psf = numpy.ones((5, 5, 3)) / 25
     denoising_filters = [
-        lambda x : (filters.gaussian(x ,sigma=0.05)*255).astype(numpy.uint8),
-        lambda x : (filters.gaussian(x, sigma=0.1)*255).astype(numpy.uint8),
-        lambda x : (filters.gaussian(x, sigma=0.5)*255).astype(numpy.uint8),
-        lambda x : (filters.gaussian(x, sigma=1)*255).astype(numpy.uint8),
-        lambda x : (filters.gaussian(x, sigma=1.5)*255).astype(numpy.uint8),
-        lambda x : (filters.gaussian(x, sigma=2)*255).astype(numpy.uint8),
-        lambda x : (filters.gaussian(x, sigma=3)*255).astype(numpy.uint8),
-        lambda x : (filters.gaussian(x ,sigma=4)*255).astype(numpy.uint8),
-        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.06)*255).astype(numpy.uint8),
-        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.05)*255).astype(numpy.uint8),
-        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.04)*255).astype(numpy.uint8),
-        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.03)*255).astype(numpy.uint8),
-        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.02)*255).astype(numpy.uint8),
-        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.01)*255).astype(numpy.uint8),
-        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.005)*255).astype(numpy.uint8),
-        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.001)*255).astype(numpy.uint8),
+        lambda x : (filters.gaussian(x ,sigma=0.05)*255),
+        lambda x : (filters.gaussian(x, sigma=0.1)*255),
+        lambda x : (filters.gaussian(x, sigma=0.5)*255),
+        lambda x : (filters.gaussian(x, sigma=1)*255),
+        lambda x : (filters.gaussian(x, sigma=1.5)*255),
+        lambda x : (filters.gaussian(x, sigma=2)*255),
+        lambda x : (filters.gaussian(x, sigma=3)*255),
+        lambda x : (filters.gaussian(x, sigma=4)*255),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.06)*255),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.05)*255),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.04)*255),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.03)*255),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.02)*255),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.01)*255),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.005)*255),
+        lambda x : (restoration.denoise_tv_chambolle(x, weight=0.001)*255),
     ]
     if action_id > len(denoising_filters):
         return image
@@ -38,9 +39,9 @@ def bits_to_int(bit_list):
     return sum([(x*(2**i)) for i, x in enumerate(bit_list[::-1])])
 
 def extract_textures(image, weak_texture_mask):
-    weak_texture = (image * weak_texture_mask).astype(numpy.uint8)
+    weak_texture = (image * weak_texture_mask)
     strong_texture = image - weak_texture
-    return strong_texture.astype(numpy.uint8), weak_texture.astype(numpy.uint8)
+    return strong_texture, weak_texture
 
 def excecute_actions(individual, images, image_index = 0):
     weak_texture_action = bits_to_int(individual[0:len(individual)//2])
@@ -99,6 +100,7 @@ def run_ea(noise_level = 0.005, pop = 20, generations = 10, evaluation_method = 
     creator.create("Individual", list, fitness=creator.Fitness)
 
 
+
     toolbox = base.Toolbox()
     toolbox.register("attr_bool", random.randint, 0, 1)
     toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, n=SIZE_OF_INDIVIDUAL)
@@ -107,7 +109,6 @@ def run_ea(noise_level = 0.005, pop = 20, generations = 10, evaluation_method = 
     toolbox.register("mate", tools.cxTwoPoint)
     toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
     toolbox.register("select", tools.selTournament, tournsize=3)
-
 
     pop = toolbox.population(n=20)
     algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=20, verbose=False)
@@ -128,7 +129,7 @@ def compare_results(individual, images, noise_level, display = False):
         new_denoised_image_rich_filter = get_denoised_image(\
                                             individual[len(individual)//2:] + individual[len(individual)//2:],
                                             images, i)
-        denoise_image_gaussian_blur = (filters.gaussian(images.noisy_images[i], noise_level*10) * 255).astype(numpy.uint8)
+        denoised_image_gaussian_blur = filters.gaussian(images.noisy_images[i], sigma=noise_level*255/4) 
 
         if display:
             image_and_wtm = numpy.hstack((images.base_images[i], images.weak_texture_masks[i]*255)).astype(numpy.uint8)
@@ -140,7 +141,7 @@ def compare_results(individual, images, noise_level, display = False):
             plt.show()
         
         print("Baseline Statistics:", end=" ")
-        print_statistics(images.base_images[i], (images.noisy_images[i]*255).astype(numpy.uint8))
+        print_statistics(images.base_images[i], (images.noisy_images[i]*255))
         print("Our Method Statistics:", end=" ")
         print_statistics(images.base_images[i], new_denoised_image)
         print("Weak Texture Filter Only Statistics:", end=" ")
@@ -148,13 +149,13 @@ def compare_results(individual, images, noise_level, display = False):
         print("Rich Texture Filter Only Statistics:", end=" ")
         print_statistics(images.base_images[i], new_denoised_image_rich_filter)
         print("Standard Gaussian Blur Statistics:", end=" ")
-        print_statistics(images.base_images[i], denoise_image_gaussian_blur)
+        print_statistics(images.base_images[i], (denoised_image_gaussian_blur * 255))
         
         
 def print_statistics(image, evaluation_image):
         print("RMSE: %f | PSNR: %f | IQI: %f | SSIM: %f" % \
-             (performance_functions.root_mean_squared_error(image, evaluation_image),\
-              performance_functions.peak_signal_noise_ratio(image, evaluation_image),\
-              performance_functions.image_quality_index(image, evaluation_image),\
-              performance_functions.structural_similarity_indix(image, evaluation_image),))
+             (performance_functions.root_mean_squared_error(evaluation_image, image),\
+              performance_functions.peak_signal_noise_ratio(evaluation_image, image),\
+              performance_functions.image_quality_index(evaluation_image, image),\
+              performance_functions.structural_similarity_indix(evaluation_image, image),))
     

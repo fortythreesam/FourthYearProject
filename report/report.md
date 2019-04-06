@@ -1,13 +1,27 @@
 # Image denoising using weak texture patches and genetic algorithms
 
+## Sam Drugan
 
+## 115463962
+
+### **Final Year Project - BSc in Computer Science**
+
+### Univeristy College Cork
+
+### Department Of Computer Science
+
+#### April 2019
+
+##### Supervisor: John Mullane
+
+$$\pagebreak$$
 
 ## Contents
 
 1. Introduction
    1. Motivation
       1. Image Noise
-      2. Evolutionary Algorithms
+      2. Evolutionary Algorithms (EA)
       3. Weak Texture Patches
    2. Goals
    3. Project Overview
@@ -21,7 +35,7 @@
          3. Chambolle's Total Variation Filter 
          4. Weiner Filter
       3. Weak Texture Patches
-   2. Evolutionary Algorithms
+   2. Evolutionary Algorithms (EA)
       1. Individual & Population
       2. Evaluation & Fitness
       3. Selection, Crossover and Mutating
@@ -59,9 +73,10 @@
 6. Conclusions
 
 
+$$\pagebreak$$
 
 ## Abstract
-___
+
 
 ### Image denoising using weak texture patches and genetic algorithms
 
@@ -71,22 +86,39 @@ Image denoising is an important process in the fields of computer vision and dig
 
 
 
+$$\pagebreak$$
 
 ## Declaration
 
+### Declaration of Originality
 
+In signing this declaration, you are conforming, in writing, that the submitted  work  is  entirely  your  own  original  work,  except  where  clearly  attributed otherwise, and that it has not been submitted partly or wholly for any other educational award. 
+
+I hereby declare that:
+
+- this is all my own work,  unless clearly indicated otherwise,  with fulland proper accreditation;
+- with respect to my own work: none of it has been submitted at any ed-ucational institution contributing in any way to an educational award;
+- with  respect  to  another’s  work:   all  text,  diagrams,  code,  or  ideas,whether verbatim, paraphrased or otherwise modified or adapted, havebeen  duly  attributed  to  the  source  in  a  scholarly  manner,  whetherfrom books, papers, lecture notes or any other student’s work, whetherpublished or unpublished, electronically or in print
+  
+Signed: 
+
+Date: 
+
+$$\pagebreak$$
 
 
 ## Acknowledgements
 
 
+$$\pagebreak$$
 
 
 ## List of Figures
-___
 
 
 
+
+$$\pagebreak$$
 
 ## Chapter 1
 
@@ -98,13 +130,16 @@ ___
 
 Noise is present in an image when there is a random variance in its pixel values. Image denoising is an important step in any image processing application. Fields such as computer vision rely on having high-quality images in order to work as efficiently as possible. Rafati, Mehravar, et al.[1] have shown how sensitive such systems can be to even low levels of noise. Digital cameras are also required to output images that closely represent the real world. It is therefore essential that as much of the process of this is as efficient as possible. The presence of noise in an image can cause problems for both perceived quality and effectiveness of algorithms using the image. 
 
-#### 1.1.2 Evolutionary Algorithm
+#### 1.1.2 Evolutionary Algorithm (EA)
 
 One problem with using denoising filters is the fact that input parameters are required to be selected manually. For example, a Gaussian filter requires an estimated noise level and Chambolles total variation filter requires a weight parameter[2]. Since there are many of these filters, it can take a long time to find the optimal one to use. The idea is to use an evolutionary algorithm to automatically select the filter and parameter(s).
 
 #### 1.1.3 Weak Texture Patches
 
 Another problem faced in denoising images is the presence of naturally noisy areas. One example of this is a beach where the sand is naturally noisy but the sky is smooth. Many images with these areas lose much of their detail when a single filter is applied over the image. Dealing with rich/weak textured areas separately and then combining the results of the two could help address this issue.
+
+![](images/1.1.3.1.jpg)
+*Fig a. Image containing a mixture of weak textures(eg. the sky) and rich textures/naturally noisy areas(eg. the grass)*
 
 ### 1.2 Goals
 
@@ -115,9 +150,10 @@ The main goal of this project is to explore the effectiveness of automatically s
 Initially, the project takes in an image and applies a layer of additive white Gaussian noise to it. It then generates a mask covering the noisy images weak texture patches. The evolutionary algorithm creates a population of individuals which represent the filters to apply to the weak/rich texture patches. From here, the selected filter for each texture type is applied over a copy of the whole image and it uses the mask to take/remove the weak texture patch. The remaining patches in each denoised image are combined to give us the complete denoised image. It then measures the effectiveness of the filter by calculating one of the above metrics, RMSE for example. After enough generations of individuals are tested, it then tests the individual on a different image with a similar level of estimated noise. 
 
 ### 1.4 Achievements
-___
 
 
+
+$$\pagebreak$$
 
 ## Chapter 2
 
@@ -159,7 +195,10 @@ A weakly textured patch in an image is found where a cluster of pixels contains 
 
 Liu, Xinhao, et al.[6] propose a method to estimate noise levels of additive white Gaussian noise by analysing weak texture patches in an image. They also show a method for generating a mask of the weak texture patches in an image. The method they propose analyses statistics from the gradient covariance matrix of each patch. The process looks for what is expected in a weak texture patch after a layer of noise has affected the image. It then estimates a threshold such that a patch is weakly textured if the maximum eigenvalue of its gradient covariance matrix falls below the threshold. This gives a matrix, with the same shape as the image, where there is a one at each position if that pixel is part of a weakly textured patch. The rest of the matrix contains zeros indicating the pixels that are part of richly textured patches. 
 
-### 2.2 Evolutionary Algorithms
+![](images/2.1.3.1.png)
+*Fig b.[6] Three examples of patches of different types. $s_2^1$ signifies the maximum eigenvalue of the gradient covarience matrix of each patch type*
+
+### 2.2 Evolutionary Algorithms (EA)
 
 Evolutionary algorithms(EA) attempt to mimic the process of natural evolution. Distinct components work together to emulate this process in some manner. At the most basic level, an EA will maintain a population of individuals, evaluate the effectiveness of each individual using a fitness function, and create the population of the next generation. It repeats this step for a number of generations until an optimal solution is found. After the final generation, the EA will return the overall best-performing individual as a solution. This solution is optimized to the given fitness function. It is ideal when finding solutions to problems without making assumptions about the optimal result. In particular, it is useful in this project as it allows us to search for an optimal pair of denoising filters to use on each of the texture patch types. It also allows for easy and rapid expansion of the filters/parameter combinations being used. Below is a more detailed summary of the elements in an EA:
 
@@ -229,8 +268,9 @@ $$ L = (2^n - 1)$$
 
 $k_1 = 0.01$ and $k_2 = 0.03$ by default.
 
-___
 
+
+$$\pagebreak$$
 
 
 ## Chapter 3
@@ -264,9 +304,9 @@ The image data set generated above retains the original, untouched, image. The d
 ### 3.4 Final EA components (Selection, Crossover & Mutation)
 
 This project uses a simple tournament selection as a means to pick the individuals used in the crossover. Since individuals consist of two decisions, a single point crossover is used. For each pair of individuals, a new pair is created such that the first individual is made up from the first half of one parent, and the second half of the other. The second individual is then created using the remaining parts of the parents. As for the mutation step, each individual will have a 20% chance to have one of their bits flipped.
-___
 
 
+$$\pagebreak$$
 
 ## Chapter 4
 
@@ -304,6 +344,9 @@ new_image = new_image[:,:,::-1]
 
 The implementation to generate the weak texture patch mask consisted mainly of following the method described by Liu, Xinhao, et al.[6] The functionality provided by Numpy allowed for easy access to complex linear algebra computations such as retrieving the eigenvalues of each patch's covariance matrices. Numpy also makes matrix manipulation simple with powerful indexing techniques and supporting functions. Similarly, Scikit-image provides the functionality required to analyse the patch's statistics such as retrieving the vertical and horizontal correlation of an image.
 
+![](images/4.3.1.png)
+*Fig c. Example of a noisy image and its corresponding weak texture mask. Found using the implementation of the above method* 
+
 ### 4.4 Evaluation Function 
 
 The evaluation function requires two parameters to be given, the individual, and the image data set to be used. There are also three optional parameters that can be set. This function is designed to be a higher order function which takes a performance function that requires two images and returns a number. This allows us to define a generic evaluate function that can be changed depending on which metric it is optimizing towards. There is also the option to display the image at each stage of the denoising (original image, noisy image and denoised image).  This is false by default due to the frequency that this function gets called during the running of the EA.
@@ -312,19 +355,19 @@ The evaluation function requires two parameters to be given, the individual, and
 
 Individuals are passed into the evaluation function as a Python list of ones and zeros. A list comprehension is used to convert each half into an int which maps to the filter to be used.
 
-"""python3
+```python3
 def bits_to_int(bit_list):
     return sum([(x*(2**i)) for i, x in enumerate(bit_list[::-1])])
-"""
+```
 
 Each filter with predetermined parameters is placed in a list of lamda functions that take in a single argument and return a denoised image. This allows the denoising process to call a position in the list as a function with one argument. Functionality like this is particularly helpful as it lets a user expand or reduce the number/types of filters used easily without worrying about breaking functionality. Below is a short example of this with two entries:
 
-"""python3
+```python3
     denoising_filters = [
         lambda x : (filters.Gaussian(x ,sigma=1)*255).astype(numpy.uint8),
         lambda x : (restoration.denoise_tv_chambolle(x, weight=0.01)*255).astype(numpy.uint8),
     ]
-"""
+```
 
 #### 4.4.2 Applying Denoising Filters
 
@@ -339,6 +382,9 @@ strong_texture = (denoised_example_image_rich - (denoised_example_image_rich * n
 
 denoised_image = weak_texture + strong_texture
 ```
+
+![](images/4.4.2.1.png)
+*Fig d. An example of the seperated texture types after having the denoising fillter applied. Left shows the weak textures in the image while right shows the rich textures. Colour channels are split individually*
 
 ### 4.5 Evolutionary Algorithm
 
@@ -377,7 +423,9 @@ def run_ea(noise_level = 0.005, pop = 20, generations = 20, evaluation_method = 
 ### 4.6 Displaying Results
 
 Using the aforementioned jupyter notebook, the student runs example versions of the above implementation steps individually in order to refine the process. The student also runs the various tests on different input parameters such as varying level of noises, swapping the evaluation metric, size of population and number of generations. It also allows the option of displaying the image at various stages of the denoising process. It requires an individual to be supplied along with the image data object and the noise level. The filters that this individual maps to are tested on the unseen images in and the resulting metrics a printed. 
-___
+
+
+$$\pagebreak$$
 
 ## Chapter 5
 
@@ -405,6 +453,58 @@ To test the method for denoising and ensure that it produces a whole image, the 
 
 #### 5.3.1 Testing Results Overview
 
+In total, 7 tests are carried out on this process. Each test runs three times and the filters selected by the EA are tested on three other images that have a similar level of noise applied to them. What we are looking for here is if the EA finds a single filter to be more effective over using a different(or the same with differrent parameters) one for each texture type. Finally the result is compared to just using a guassian blur based on the noise level applied previously.
+
+Denoising Method Index:
+
+| Method | Index Number |
+| --- | --- |
+| No Denoising(Baseline Measure) | 1 |
+| Students Method |  2 |
+| Only using filter found for weak textures | 3 |
+| Only using filter found for rich textures | 4 |
+| Gaussian Blur Based on Noise Level | 5 |
+
+##### 5.3.1.1 First Test
+
+Input parameters for the first test:
+
+| Noise Level | Population | Generations | Evaluations Metric | 
+| --- | --- | --- | --- |
+| 0.005 | 20 | 10 | RMSE |
+
+Results First Execution:
+
+| Filter For Weak Texture | Filter For Rich Texture |
+| --- | --- |
+| Gaussian Blur with Sigma = 1 | Chambolle TV Filter with Weight = 0.04 |
+
+Image EA was run on:
+
+| Denoising Method | RMSE | PSNR | IQI | SSIM |
+| --- | --- | --- | --- | --- |
+| 1 | 30.498830 | 23.216352 | 0.997525 | 0.466847 |
+| 2 | **14.457404** | **29.700210** | **0.999440** | 0.807514 |
+| 3 | 16.594889 | 28.502529 | 0.999262 | 0.783780 |
+| 4 | 14.628030 | 29.598299 | 0.999425 | **0.828667** |
+| 5 | 29.643997 | 23.463281 | 0.997662 | 0.477144 |
+
+Unseen Image No.1 EA was run on:
+
+| Denoising Method | RMSE | PSNR | IQI | SSIM |
+| --- | --- | --- | --- | --- |
+| 1 | 27.930084 | 23.980571 | 0.982792 | 0.439057 | 
+| 2 | **15.100944** | **29.321934** | **0.994200** | 0.804110 |
+| 3 | 19.011369 | 27.321748 | 0.991259 | 0.764320 |
+| 4 | 15.658412 | 29.007062 | 0.993755 | **0.855345** |
+| 5 | 27.158534 | 24.223890 | 0.983654 | 0.447596 |
+
+
+Results for Other Executions:
+
+| Execution | Filter For Weak Texture | Filter For Rich Texture |
+| --- | --- | --- |
+|  |  |  |
 
 
 ### 5.4 Problems
@@ -419,8 +519,10 @@ Finally, since each individual applies two filters to the noisy image in each ge
   
 Due to the above problems, it is unlikely that this process as a whole would have a place in any full built systems. Even with the above downsides, the results shown here could prove useful when trying to optimize the denoising results as much as possible. If a programme requires that the filtered image needs to be improved as much as possible then this method of denoising could push the reults even further then standard methods.
 
-One way in which this method could be used in a more viable way is to build up an index that maps filter pairs to estimated noise levels and weak/rich texture patch percent intervals. This will remove all the time of execution for the running of the EA and allow for an optimal pair to be selected immediately. Since high levels of gaussian noise do not occur naturally then the issue of innacurate weak textures being selected is reduced. All that is left to compute is the weak texture mask and the denoised image, which are not too intense on a single image.
+One way in which this method could be used in a more viable way is to build up an index that maps filter pairs to estimated noise levels and weak/rich texture patch percent intervals. This will remove all the time of execution for the running of the EA and allow for an optimal pair to be selected immediately. Since high levels of gaussian noise do not occur naturally then the issue of innacurate weak textures being selected is reduced. All that is left to compute is the weak texture mask and the denoised image, which is not too intensive on a single image.
 
+
+$$\pagebreak$$
 
 ## References
 
