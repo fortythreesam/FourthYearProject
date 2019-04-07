@@ -109,11 +109,11 @@ $$\pagebreak$$
 
 ## Acknowledgements
 
-Firstly, I would like to thank Dr. John Mullane for his help and guidence in this project. I am especially thankful for the opportunity to learn about this field of computer science. It has given me an appreciation for the areas of image processing, linear algebra and how they work together to achieve things efficiently.
+Firstly, I would like to thank Dr. John Mullane for his help and guidence in this project. I am especially thankful for the opportunity to learn about this field of computer science. It has given me a big appreciation for the areas of image processing, genetic algorithms, and linear algebra.
 
-I'm very thankful to my family for always being here for me and supporting me throughout my whole life. Especially my parents who have always done everything they can to ensure that I am happy.
+I'm very thankful to my family for always being here for me and supporting me throughout my whole life. Especially my parents who have always done everything they can to ensure that I am happy. They have always motivated me to work harder and to appreciate what I'm doing.
 
-Finally, I would also like to thank my friends who have the whole process more enjoyable. In many ways they have inspired me to keep challenging myself and improve in any area I can. Also to everyone in Netsoc who have mativated me through the work they do in and out of the society.
+Finally, I would also like to thank my friends who have the whole process more enjoyable. In many ways they have inspired me to keep challenging myself and improve in any area I can. I'm also thankful to everyone in Netsoc who have mativated me through the work they do in and out of the society.
 
 
 
@@ -155,11 +155,11 @@ The main goal of this project is to explore the effectiveness of automatically s
 
 ### 1.3 Project Overview
 
-Initially, the project takes in an image and applies a layer of additive white Gaussian noise to it. It then generates a mask covering the noisy images weak texture patches. The evolutionary algorithm creates a population of individuals which represent the filters to apply to the weak/rich texture patches. From here, the selected filter for each texture type is applied over a copy of the whole image and it uses the mask to take/remove the weak texture patch. The remaining patches in each denoised image are combined to give us the complete denoised image. It then measures the effectiveness of the filter by calculating one of the above metrics, RMSE for example. After enough generations of individuals are tested, it then tests the individual on a different image with a similar level of estimated noise. 
+Initially, the project takes in an image and applies a layer of additive white Gaussian noise to it. It then generates a mask covering the noisy images weak texture patches. The evolutionary algorithm creates a population of individuals which represent the filters to apply to the weak/rich texture patches. From here, the selected filter for each texture type is applied over a copy of the whole image and it uses the mask to take/remove the weak texture patch. The remaining patches in each denoised image are combined to give the complete denoised image. It then measures the effectiveness of the filter by calculating one of the above metrics, RMSE for example. After enough generations of individuals are tested, it then tests the individual on a different image with a similar level of estimated noise. 
 
 ### 1.4 Achievements
 
-
+The student achieves the goal of beating other standard methods metrics in the denoising proccess although the reilst vary greatly. While the results are better in general for the RMSE, PSNR, and IQI, the students method of denoising falls short of performing better then just using a single filter in regards to the SSIM. This is true for medium to high noise levels which cause major visual problems with in an image. The method in this project performs the best in nine out of ten test cases when evaluated on images of low noise levels (although still visually noticeable).
 
 $$\pagebreak$$
 
@@ -171,7 +171,7 @@ $$\pagebreak$$
 
 ### 2.1.1 Images in Computers
 
-There are many ways to represent images in memory. The standard way to represent natural pictures is as a raster image. A raster image is a rectangular matrix that can vary in depth. Each position in the matrix represents that locations colour/greyscale value. In this project, images are stored in a matrix with a depth of 3 with each channel representing red, blue, and green respectively. Each position in the matrix is called a pixel. This is an additive colour model as equal amounts of each will give us white.
+There are many ways to represent images in memory. The standard way to represent natural pictures is as a raster image. A raster image is a rectangular matrix that can vary in depth. Each position in the matrix represents that locations colour/greyscale value. In this project, images are stored in a matrix with a depth of 3 with each channel representing red, blue, and green respectively. Each position in the matrix is called a pixel. This is an additive colour model as equal amounts of each will produce white.
 
 ### 2.1.2 Image Noise/Denoising
 
@@ -208,7 +208,7 @@ Liu, Xinhao, et al.[6] propose a method to estimate noise levels of additive whi
 
 ### 2.2 Evolutionary Algorithms (EA)
 
-Evolutionary algorithms(EA) attempt to mimic the process of natural evolution. Distinct components work together to emulate this process in some manner. At the most basic level, an EA will maintain a population of individuals, evaluate the effectiveness of each individual using a fitness function, and create the population of the next generation. It repeats this step for a number of generations until an optimal solution is found. After the final generation, the EA will return the overall best-performing individual as a solution. This solution is optimized to the given fitness function. It is ideal when finding solutions to problems without making assumptions about the optimal result. In particular, it is useful in this project as it allows us to search for an optimal pair of denoising filters to use on each of the texture patch types. It also allows for easy and rapid expansion of the filters/parameter combinations being used. Below is a more detailed summary of the elements in an EA:
+Evolutionary algorithms(EA) attempt to mimic the process of natural evolution. Distinct components work together to emulate this process in some manner. At the most basic level, an EA will maintain a population of individuals, evaluate the effectiveness of each individual using a fitness function, and create the population of the next generation. It repeats this step for a number of generations until an optimal solution is found. After the final generation, the EA will return the overall best-performing individual as a solution. This solution is optimized to the given fitness function. It is ideal when finding solutions to problems without making assumptions about the optimal result. In particular, it is useful in this project as it allows someon to search for an optimal pair of denoising filters to use on each of the texture patch types. It also allows for easy and rapid expansion of the filters/parameter combinations being used. Below is a more detailed summary of the elements in an EA:
 
 #### 2.2.1 Individual & Population
 
@@ -224,7 +224,7 @@ There are a number of different techniques for the selection of individuals that
 
 ### 2.3 Evaluation Metrics
 
-As shown above, we have four methods of evaluating the effectiveness of a denoising filter. The main reason for this is that the EA optimizes the result based on the fitness function. One of the above metrics will be used as the fitness function, and then use the others to analyse its effectiveness in other areas.
+As shown above, there are four methods of evaluating the effectiveness of a denoising filter. The main reason for this is that the EA optimizes the result based on the fitness function. One of the above metrics will be used as the fitness function, and then use the others to analyse its effectiveness in other areas.
 
 #### 2.3.1 Root Mean Squared Error (RMSE)
 
@@ -264,7 +264,7 @@ $$\sigma_{xy} = {1 \over N - 1} \sum^N_{i=1}(x_i-\bar x)(y_i-\bar y)$$
 
 #### 2.3.4 Structural Similarity Index Metric SSIM
 
-SSIM is another metric that returns a result based on the luminance, contrast, and structural difference between the two images. While other metrics such as RMSE are purely a mathematical measure, SSIM gives us an idea of the perceived quality of the resulting image. A measure like this is useful in fields such as digital cameras where mathematical accuracy does not matter to the end user.[5] 
+SSIM is another metric that returns a result based on the luminance, contrast, and structural difference between the two images. While other metrics such as RMSE are purely a mathematical measure, SSIM gives an idea of the perceived quality of the resulting image. A measure like this is useful in fields such as digital cameras where mathematical accuracy does not matter to the end user.[5] 
 
 $$SSIM = {(2*\bar x * \bar y + C_1)(2*\sigma_{xy} + C_2) \over (\sigma^2_x + \sigma^2_y + C_2)*((\bar{x})^2 + (\bar{y})^2 + C_1)}$$
 
@@ -340,7 +340,7 @@ The student uses a jupyter notebook to implement and test the workflow of the de
 
 ### 4.2 Images
 
-Images from the Berkely segmentation data set[8] will be used for testing and evaluation purposes. This allows us to ensure our weak texture mask lines up with the human segmented images as the border between rich and weak textures is often a harsh change. The images available in this data set are also at a reasonable resolution. This prevents the EA run time from becoming too excessive as applying many denoising filters becomes more cumbersome on the CPU as resolution increases.  
+Images from the Berkely segmentation data set[8] will be used for testing and evaluation purposes. This allows the student to ensure our weak texture mask lines up with the human segmented images as the border between rich and weak textures is often a harsh change. The images available in this data set are also at a reasonable resolution. This prevents the EA run time from becoming too excessive as applying many denoising filters becomes more cumbersome on the CPU as resolution increases.  
 
 The implementation of the data set object is trivial as it requires a single load images function that accepts the number of images to load and the level of Gaussian noise to add. When images are loaded in, the colour channels are initially in the order of blue, green, red (BGR) while the standard used in display functions is red, green, blue (RGB). Changing the order in this case only requires a reversing of the order of the channels. Python3's list indexing simplifies this as shown below:
 
@@ -357,7 +357,7 @@ The implementation to generate the weak texture patch mask consisted mainly of f
 
 ### 4.4 Evaluation Function 
 
-The evaluation function requires two parameters to be given, the individual, and the image data set to be used. There are also three optional parameters that can be set. This function is designed to be a higher order function which takes a performance function that requires two images and returns a number. This allows us to define a generic evaluate function that can be changed depending on which metric it is optimizing towards. There is also the option to display the image at each stage of the denoising (original image, noisy image and denoised image).  This is false by default due to the frequency that this function gets called during the running of the EA.
+The evaluation function requires two parameters to be given, the individual, and the image data set to be used. There are also three optional parameters that can be set. This function is designed to be a higher order function which takes a performance function that requires two images and returns a number. This allows a generic definition of the evaluate function that can be changed depending on which metric it is optimizing towards. There is also the option to display the image at each stage of the denoising (original image, noisy image and denoised image).  This is false by default due to the frequency that this function gets called during the running of the EA.
 
 #### 4.4.1 Individual Decoding and Action Mapping
 
@@ -379,7 +379,7 @@ Each filter with predetermined parameters is placed in a list of lamda functions
 
 #### 4.4.2 Applying Denoising Filters
 
-The filter used on each type of texture is applied over a copy of the full image. Initially in the project, the textures were extracted from the image and had the relevant filter applied. This caused neighbouring pixels not in the same texture group to be modified due to the nature of how filters worked. After applying the filters, the weak texture mask is used to extract the weak and rich textured areas. As mentioned earlier, Numpy provides functionality for N-dimensional array manipulation. This allows us to extract the weak texture areas by element-wise multiplication of the weak texture mask and the denoised image. This works as the weak texture mask stores a one in each pixel's colour channel if that pixel's colour channel is in a weak texture patch. Element-wise subtraction is then used to retrieve the rich textures. Finally, element-wise addition of the two texture types gives us back a full image. Below is the code required t implement this:
+The filter used on each type of texture is applied over a copy of the full image. Initially in the project, the textures were extracted from the image and had the relevant filter applied. This caused neighbouring pixels not in the same texture group to be modified due to the nature of how filters worked. After applying the filters, the weak texture mask is used to extract the weak and rich textured areas. As mentioned earlier, Numpy provides functionality for N-dimensional array manipulation. This allows for extraction of the weak texture areas by using element-wise multiplication of the weak texture mask and the denoised image. This works as the weak texture mask stores a one in each pixel's colour channel if that pixel's colour channel is in a weak texture patch. Element-wise subtraction is then used to retrieve the rich textures. Finally, element-wise addition of the two texture types returns a full image. Below is the code required to implement this:
 
 ```python3
 denoised_example_image_weak = filters.Gaussian(noisy_image, sigma=2)
@@ -441,7 +441,7 @@ $$\pagebreak$$
 
 ### 5.1 Evaluation Overview
 
-The evaluation of this project is split into two sections. First, we ensure that the functions implemented such as the detection of weak texture patches. The student then evaluates the effectiveness of the method of denoising images described above. The problems encountered in using this method will be discussed as well as potential use cases or viability. 
+The evaluation of this project is split into two sections. First, the student ensures that the functions implemented such as the detection of weak texture patches. The student then evaluates the effectiveness of the method of denoising images described above. The problems encountered in using this method will be discussed as well as potential use cases or viability. 
 
 As has been talked about before, the EA has been set up in a way in which it is easy to test a wide variety of circumstances. The student first reviews the results when running the EA with a fitness metric base on the RMSE. This is tested at various noise levels. The evaluation will depend on its performance in the other three areas compared to standard methods which will be described below.
 
@@ -461,139 +461,227 @@ To test the method for denoising and ensure that it produces a whole image, the 
 
 #### 5.3.1 Testing Results Overview
 
-In total, 7 tests are carried out on this process. All tests are run on jpeg images from the Berkely segmentation data set[8]. Each test runs three times and the filters selected by the EA are tested on three other images that have a similar level of noise applied to them. What we are looking for here is if the EA finds a single filter to be more effective over using a different(or the same with differrent parameters) one for each texture type. Finally the result is compared to just using a guassian blur based on the noise level applied previously. For the first test the student goes in depth into the processes results in each area. For subsequant tests, summaries and the most significant results are shown.
+In total, 7 tests are carried out on this process. All tests are run on jpeg images from the Berkely segmentation data set[8]. Each test runs three times and the filters selected by the EA are tested on three other images that have a similar level of noise applied to them. What is searced for here is if the EA finds a single filter to be more effective over using a different(or the same with differrent parameters) one for each texture type. Finally the result is compared to just using a guassian blur based on the noise level applied previously. For the first test the student goes in depth into the processes results in each area. For subsequant tests, summaries and the most significant results are shown.
 
 Denoising Method Index:
 
-| Method | Index Number |
-| --- | --- |
-| No Denoising(Baseline Measure) | 1 |
-| Students Method |  2 |
-| Only using filter found for weak textures | 3 |
-| Only using filter found for rich textures | 4 |
-| Gaussian Blur Based on Noise Level | 5 |
+| Method                                    | Index Number |
+| ----------------------------------------- | ------------ |
+| No Denoising(Baseline Measure)            | 1            |
+| Students Method                           | 2            |
+| Only using filter found for weak textures | 3            |
+| Only using filter found for rich textures | 4            |
+| Gaussian Blur Based on Noise Level        | 5            |
 
 ##### 5.3.1.1 First Test
 
 Input parameters for the first test:
 
-| Noise Level | Population | Generations | Evaluations Metric | 
-| --- | --- | --- | --- |
-| 0.005 | 20 | 10 | RMSE |
+| Noise Level | Population | Generations | Evaluations Metric |
+| ----------- | ---------- | ----------- | ------------------ |
+| 0.005       | 20         | 10          | RMSE               |
 
 ![](images/5.3.1.1.1.png)
 *Fig e. Image used in Ea at various stages. Original Image (Top left), Weak Texture Mask (Top Right), Noisy Image(Bottom Left), Denoised Image(Bottom Right)*
 
 Results First Execution:
 
-| Filter For Weak Texture | Filter For Rich Texture |
-| --- | --- |
+| Filter For Weak Texture      | Filter For Rich Texture                |
+| ---------------------------- | -------------------------------------- |
 | Gaussian Blur with Sigma = 1 | Chambolle TV Filter with Weight = 0.04 |
 
 Image EA was run on:
 
-| Denoising Method | RMSE | PSNR | IQI | SSIM |
-| --- | --- | --- | --- | --- |
-| 1 | 30.498830 | 23.216352 | 0.997525 | 0.466847 |
-| 2 | **14.457404** | **29.700210** | **0.999440** | 0.807514 |
-| 3 | 16.594889 | 28.502529 | 0.999262 | 0.783780 |
-| 4 | 14.628030 | 29.598299 | 0.999425 | **0.828667** |
-| 5 | 29.643997 | 23.463281 | 0.997662 | 0.477144 |
+| Denoising Method | RMSE          | PSNR          | IQI          | SSIM         |
+| ---------------- | ------------- | ------------- | ------------ | ------------ |
+| 1                | 30.498830     | 23.216352     | 0.997525     | 0.466847     |
+| 2                | **14.457404** | **29.700210** | **0.999440** | 0.807514     |
+| 3                | 16.594889     | 28.502529     | 0.999262     | 0.783780     |
+| 4                | 14.628030     | 29.598299     | 0.999425     | **0.828667** |
+| 5                | 29.643997     | 23.463281     | 0.997662     | 0.477144     |
 
 Unseen Image No.1:
 
-| Denoising Method | RMSE | PSNR | IQI | SSIM |
-| --- | --- | --- | --- | --- |
-| 1 | 27.930084 | 23.980571 | 0.982792 | 0.439057 | 
-| 2 | **15.100944** | **29.321934** | **0.994200** | 0.804110 |
-| 3 | 19.011369 | 27.321748 | 0.991259 | 0.764320 |
-| 4 | 15.658412 | 29.007062 | 0.993755 | **0.855345** |
-| 5 | 27.158534 | 24.223890 | 0.983654 | 0.447596 |
+| Denoising Method | RMSE          | PSNR          | IQI          | SSIM         |
+| ---------------- | ------------- | ------------- | ------------ | ------------ |
+| 1                | 27.930084     | 23.980571     | 0.982792     | 0.439057     |
+| 2                | **15.100944** | **29.321934** | **0.994200** | 0.804110     |
+| 3                | 19.011369     | 27.321748     | 0.991259     | 0.764320     |
+| 4                | 15.658412     | 29.007062     | 0.993755     | **0.855345** |
+| 5                | 27.158534     | 24.223890     | 0.983654     | 0.447596     |
 
 Unseen Image No.2:
 
-| Denoising Method | RMSE | PSNR | IQI | SSIM |
-| --- | --- | --- | --- | --- |
-| 1 | 29.116240 | 23.619310 | 0.996858 | 0.723112 | 
-| 2 | **22.834092** | **25.730341** | 0.998040 | 0.861268 |
-| 3 | 48.165222 | 19.247345 | 0.991265 | 0.692436 |
-| 4 | 22.849559 | 25.724460 | **0.998044** | **0.876741** |
-| 5 | 28.404125 | 23.834388 | 0.997007 | 0.728445 |
+| Denoising Method | RMSE          | PSNR          | IQI          | SSIM         |
+| ---------------- | ------------- | ------------- | ------------ | ------------ |
+| 1                | 29.116240     | 23.619310     | 0.996858     | 0.723112     |
+| 2                | **22.834092** | **25.730341** | 0.998040     | 0.861268     |
+| 3                | 48.165222     | 19.247345     | 0.991265     | 0.692436     |
+| 4                | 22.849559     | 25.724460     | **0.998044** | **0.876741** |
+| 5                | 28.404125     | 23.834388     | 0.997007     | 0.728445     |
 
 Unseen Image No.3:
 
-| Denoising Method | RMSE | PSNR | IQI | SSIM |
-| --- | --- | --- | --- | --- |
-| 1 | 30.906820 | 23.100930 | 0.996291 | 0.324265 | 
-| 2 | **13.776044** | **30.119526** | **0.999259** | 0.752554 |
-| 3 | 14.274137 | 29.811019 | 0.999205 | 0.761613 |
-| 4 | 16.111993 | 28.759031 | 0.998985 | **0.777737** |
-| 5 | 30.035167 | 23.349415 | 0.996496 | 0.333437 |
+| Denoising Method | RMSE          | PSNR          | IQI          | SSIM         |
+| ---------------- | ------------- | ------------- | ------------ | ------------ |
+| 1                | 30.906820     | 23.100930     | 0.996291     | 0.324265     |
+| 2                | **13.776044** | **30.119526** | **0.999259** | 0.752554     |
+| 3                | 14.274137     | 29.811019     | 0.999205     | 0.761613     |
+| 4                | 16.111993     | 28.759031     | 0.998985     | **0.777737** |
+| 5                | 30.035167     | 23.349415     | 0.996496     | 0.333437     |
 
 From the results shown here, the EA chose a different filter to use on each texture type. This method makes an improvement in the RMSE and PSNR on all four images which shows that results are not only positive due to running the EA on a specific image. In all cases however, a better SSIM is achieved from just using the second filter. This could be due to the fact the EA optimizes towards the RMSE. Shown further down (in the seventh test) is the results when optimizing towards SSIM. These results also show that using the same set of filters across other images with the same noise levels provides a consistenly effective result.
 
 Other Executions:
 
-| Execution | Filter For Weak Texture | Filter For Rich Texture |
-| --- | --- | --- |
-| 2 | Gaussian Blur with Sigma = 1 | Gaussian Blur with Sigma = 1 |
-| 3 | Gaussian Blur with Sigma = 1.5 | Chambolle TV Filter with Weight = 0.04 |
+| Execution | Filter For Weak Texture        | Filter For Rich Texture                |
+| --------- | ------------------------------ | -------------------------------------- |
+| 2         | Gaussian Blur with Sigma = 1   | Gaussian Blur with Sigma = 1           |
+| 3         | Gaussian Blur with Sigma = 1.5 | Chambolle TV Filter with Weight = 0.04 |
 
 
-In the second execution of the process under the above conditions, only one filter is used over the whole image. This shows us that using seperate filters on each texture type isn't always the most effective way to denoise an image. This still shows the effectiveness of using an EA to find which filter to use. There is an average improvement of 12.516240 in the RMSE and an increase of 0.337282 in the SSIM across all four images.
+In the second execution of the process under the above conditions, only one filter is used over the whole image. This shows that using seperate filters on each texture type isn't always the most effective way to denoise an image. This still shows the effectiveness of using an EA to find which filter to use. There is an average improvement of 12.516240 in the RMSE and an increase of 0.337282 in the SSIM across all four images.
 
 ##### 5.3.1.2 Second Test
 
-| Noise Level | Population | Generations | Evaluations Metric | 
-| --- | --- | --- | --- |
-| 0.01 | 20 | 10 | RMSE |
+| Noise Level | Population | Generations | Evaluations Metric |
+| ----------- | ---------- | ----------- | ------------------ |
+| 0.01        | 20         | 10          | RMSE               |
 
 Tests on higher levels of noise are carried out in order to see if it is still a viable option. One reason it might become less viable is due to the nature of weak texture patch selection becoming less accurate the higher the noise level.
 
+| Execution | Filter For Weak Texture                | Filter For Rich Texture                |
+| --------- | -------------------------------------- | -------------------------------------- |
+| 1         | Gaussian Blur with Sigma = 1           | Chambolle TV Filter with Weight = 0.05 |
+| 2         | Gaussian Blur with Sigma = 1.5         | Gaussian Blur with Sigma = 1.5         |
+| 3         | Chambolle TV Filter with Weight = 0.04 | Chambolle TV Filter with Weight = 0.05 |
+
+| Average Improvement | RMSE      | PSNR    | IQI      | SSIM     |
+| -------------------- | --------- | ------- | -------- | -------- |
+|                      | 18.674547 | 5.13726 | 0.005993 | 0.216856 |
+
+Again, one of the executions under these circumstace produced a result where a single filter worked best. Execution number one shows the first problem with EA's. The result of using just the rich texture filter performed better in all metrics on the image used in the EA. This shows the optimal solution was not found. Interestingly, the rich texture filter on its own did not perform better on all unseen test images. The metrics for this projects method fell in between the results of the two filters, with one or the other achieving better results. 
+
 ##### 5.3.1.3 Third Test 
 
-| Noise Level | Population | Generations | Evaluations Metric | 
-| --- | --- | --- | --- |
-| 0.02 | 20 | 10 | RMSE |
+| Noise Level | Population | Generations | Evaluations Metric |
+| ----------- | ---------- | ----------- | ------------------ |
+| 0.02        | 20         | 10          | RMSE               |
 
 The noise applied here is quite extreme and is unlikely to occur naturally. The weak texture become very ambiguous here and causes much more of the image to fall below the threshold required to be selected as a weak texture patch.
 
 ![](images/5.3.1.3.1.png)
 *Fig f. Noisy image used in this test*
 
+| Execution | Filter For Weak Texture                | Filter For Rich Texture                |
+| --------- | -------------------------------------- | -------------------------------------- |
+| 1         | Chambolle TV Filter with Weight = 0.06 | Chambolle TV Filter with Weight = 0.06 |
+| 2         | Gaussian Blur with Sigma = 1           | Chambolle TV Filter with Weight = 0.05 |
+| 3         | Gaussian Blur with Sigma = 1.5         | Gaussian Blur with Sigma = 1.5         |
+
+| Average Improvement: | RMSE      | PSNR     | IQI       | SSIM     |
+| -------------------- | --------- | -------- | --------- | -------- |
+|                      | 29.059403 | 6.294882 | 0.0144325 | 0.253327 |
+
+The EA selected the same filter to use over the whole image in two of the executions here. This is a strong indication that the method to split the image into its seperate texture types is becoming less accurate. 
+
 ##### 5.3.1.4 Fourth Test 
 
-This is the final test in which we modify the noise level. Here we are checking to see if a lower level of noise (although still noticeable to the human eye) can be more optimally denoised using separate filters.
+This is the final test in which the student modifies the noise level. Here they are checking to see if a lower level of noise (although still noticeable to the human eye) can be more optimally denoised using separate filters.
 
-| Noise Level | Population | Generations | Evaluations Metric | 
-| --- | --- | --- | --- |
-| 0.001 | 20 | 10 | RMSE | 
+| Noise Level | Population | Generations | Evaluations Metric |
+| ----------- | ---------- | ----------- | ------------------ |
+| 0.001       | 20         | 10          | RMSE               |
+
+| Execution | Filter For Weak Texture                | Filter For Rich Texture                |
+| --------- | -------------------------------------- | -------------------------------------- |
+| 1         | Gaussian Blur with Sigma = 1           | Gaussian Blur with Sigma = 0.5         |
+| 2         | Gaussian Blur with Sigma = 1           | Gaussian Blur with Sigma = 0.5         |
+| 3         | Chambolle TV Filter with Weight = 0.02 | Chambolle TV Filter with Weight = 0.01 |
+
+
+| Average Improvement: | RMSE     | PSNR      | IQI      | SSIM     |
+| -------------------- | -------- | --------- | -------- | -------- |
+|                      | 2.115498 | 1.7455304 | 0.000169 | 0.108475 |
+
+Around this noise level is where the students method of denoising performs best. In nine out of the twelve test images, the method described here performed better in all of the above metrics. The main reason the method works well here is that the weak texture patch selection process can work much more accurately which leads to a more meaningful denoising process. Compared to the first test, even the SSIM of the denoised images here are scoring better then when using a single filter.
+
+![](images/5.3.1.4.1.png)
+*Fig g. Noisy Image(Right), Denoised Image using the students method(Left)* 
 
 ##### 5.3.1.5 Fifth Test 
 
-| Noise Level | Population | Generations | Evaluations Metric | 
-| --- | --- | --- | --- |
-| 0.005 | 20 | 10 | PSNR | 
+This, and the next two, tests check to see if any improvements are made when using a different fitness metric. The PSNR is used as as the metric that the EA optimizes towards.
+
+| Noise Level | Population | Generations | Evaluations Metric |
+| ----------- | ---------- | ----------- | ------------------ |
+| 0.005       | 20         | 10          | PSNR               |
+
+| Execution | Filter For Weak Texture        | Filter For Rich Texture                |
+| --------- | ------------------------------ | -------------------------------------- |
+| 1         | Gaussian Blur with Sigma = 1.5 | Chambolle TV Filter with Weight = 0.04 |
+| 2         | Gaussian Blur with Sigma = 1   | Chambolle TV Filter with Weight = 0.03 |
+| 3         | Gaussian Blur with Sigma = 1   | Chambolle TV Filter with Weight = 0.03 |
+
+| Average Improvement: | RMSE      | PSNR     | IQI      | SSIM    |
+| -------------------- | --------- | -------- | -------- | ------- |
+|                      | 12.452281 | 4.903126 | 0.004349 | 0.10068 |
+
+Similar issues arrise here in regards to the EA finding a suboptimal solution with regards to the first execution. In the subsequet executions, the filters found outperform the other methods tested except in regards to the SSIM. Using SSIM over RMSE shows no benefits or improvements in the main issues.
 
 ##### 5.3.1.6 Sixth Test 
 
-| Noise Level | Population | Generations | Evaluations Metric | 
-| --- | --- | --- | --- |
-| 0.005 | 20 | 10 | IQI | 
+Here the student is testing to see if using the IQI as the fitness metric has an effect on the result.
+
+| Noise Level | Population | Generations | Evaluations Metric |
+| ----------- | ---------- | ----------- | ------------------ |
+| 0.005       | 20         | 10          | IQI                |
+
+| Execution | Filter For Weak Texture                | Filter For Rich Texture                |
+| --------- | -------------------------------------- | -------------------------------------- |
+| 1         | Gaussian Blur with Sigma = 1.5         | Chambolle TV Filter with Weight = 0.04 |
+| 2         | Chambolle TV Filter with Weight = 0.03 | Chambolle TV Filter with Weight = 0.04 |
+| 3         | Gaussian Blur with Sigma = 1           | Chambolle TV Filter with Weight = 0.03 |
+
+| Average Improvement: | RMSE     | PSNR     | IQI     | SSIM     |
+| -------------------- | -------- | -------- | ------- | -------- |
+|                      | 13.30172 | 5.396868 | 0.00549 | 0.146669 |
+
+Again, the same is seen here as with the optimizations towards RMSE ad PSNR. Even when the resulting filters outperform single filters in the first three metrics, it usually loses out in the SSIM.
 
 ##### 5.3.1.7 Seventh Test 
 
-| Noise Level | Population | Generations | Evaluations Metric | 
-| --- | --- | --- | --- |
-| 0.005 | 20 | 10 | SSIM | 
+In this test, the EA optimizes the result towards the SSIM. As seen in the first test above, the filter used on the rich textures performed better in this metric. This test shows if, in terms of the SSIM, it is better to use a single filter, and if it only performs better for this one metric.
+
+| Noise Level | Population | Generations | Evaluations Metric |
+| ----------- | ---------- | ----------- | ------------------ |
+| 0.005       | 20         | 10          | SSIM               |
+
+| Execution | Filter For Weak Texture                | Filter For Rich Texture                |
+| --------- | -------------------------------------- | -------------------------------------- |
+| 1         | Chambolle TV Filter with Weight = 0.04 | Chambolle TV Filter with Weight = 0.03 |
+| 2         | Chambolle TV Filter with Weight = 0.05 | Chambolle TV Filter with Weight = 0.05 |
+| 3         | Gaussian Blur with Sigma = 3           | Gaussian Blur with Sigma = 1           |
+
+| Average Improvement: | RMSE     | PSNR     | IQI      | SSIM     |
+| -------------------- | -------- | -------- | -------- | -------- |
+|                      | 8.447205 | 3.403982 | 0.002652 | 0.136141 |
+
+While this version of the EA achieves better results in all metrics when testing on the images used in the EA, it fails to beat the SSIM in 8 of the 9 unseen images. This is a sign that at this level of noise or higher, it becomes hard to find filters that work in the general case.
+
+##### 5.3.1.8 Notes
+
+As seen above, the student recieved a variety of results from the experiments carried out. One of the most notable outcomes from this was that while the method of denoising discussed in this project was shown to be effective, it is not always the case that it is the most effective. Another thing to note is that even for images with similar noise levels, the pair of filters almost always varied, including using only a single filter at times. Finally, the EA did not alwas reach the most optimal solution.
 
 ### 5.4 Problems
-
+    
 One major problem is the sensitivity of the weak texture patch selection process to noise. The confidence interval that can be set in the estimation function allows for this problem to be offset but the results are still innacurate. Shown below is a weak texture mask generated on the same image with three differant levels of Gaussian white noise added. Of course, the less accurate the weak texture patch estimation is, the less effective the method described here is as either edges would become blurred or visual noise would be left behind. 
 
-Another issue in the way of finding an pair of filters to use is that the results can vary depending on the percent of which the picture is made up of weak/rich textures. If an image only contains rich textures(which can be common in natural images) then only one filter matters when evaluating the denoising process. This can lead to an innefective, or even random, second filter being used. 
+Another issue in the way of finding a pair of filters to use is that the results can vary depending on the percent of which the picture is made up of weak/rich textures. If an image only contains rich textures(which can be common in natural images) then only one filter matters when evaluating the denoising process. This can lead to an innefective, or even random, second filter being used. 
 
-Finally, since each individual applies two filters to the noisy image in each generation, the run time of the EA can grow quite large. This is especially the case when the filter list grows and more generations/population are required to find an optimal solution. This run time is unfeasible for such a minor component of image processing. The computation time for finding the weak/rich textures in an image aslo grows more expensive when the image size increases which will be more common as better cameras become more affordable and the average resolution increases. 
+Since each individual applies two filters to the noisy image in each generation, the run time of the EA can grow quite large. This is especially the case when the filter list grows and more generations/population are required to find an optimal solution. This run-time is unfeasible for such a minor component of image processing. The computation time for finding the weak/rich textures in an image aslo grows more expensive when the image size increases which will be more common as better cameras become more affordable and the average resolution increases. 
+
+In regards to the EA, if it is not given enough time(Not enough generations/population) then a suboptimal solution will be returned. This can lead to two differant filters being used when a single filter would have been more optimal. The solution to this problem then contributes back to the aforementioned problem of large run-times. 
 
 ### 5.5 Use Cases/Viability
   
@@ -601,6 +689,27 @@ Due to the above problems, it is unlikely that this process as a whole would hav
 
 One way in which this method could be used in a more viable way is to build up an index that maps filter pairs to estimated noise levels and weak/rich texture patch percent intervals. This will remove all the time of execution for the running of the EA and allow for an optimal pair to be selected immediately. Since high levels of gaussian noise do not occur naturally then the issue of innacurate weak textures being selected is reduced. All that is left to compute is the weak texture mask and the denoised image, which is not too intensive on a single image.
 
+$$\pagebreak$$
+
+## Chapter 6
+
+## Conclusions
+
+### 6.1 Summary
+
+In the end, the student was able to generate the weak texture masks, apply seperate denoising filters to sections in the image, use an EA to search for optimal filters to use, and evaluate their performance in a number of cicumstances. They were also able to gain a huge insight into the area of image processing and the difficulties associated with the area. Much of the students knowledge on evolutionary algorithms and their effeciveness was furthered throughout. The project also gave the student a chance to delve into the topic of linear algebra and it's place in computer science.
+
+### 6.2 Final Results
+
+Overall, the project has shown that images denoising can be improved by utilising differant techniques based on the type of textures in the image. It has also been seen that using a single filter over the whole image is optimal at times. Using an EA to select the filters and parameter has proven to be effective, and requires little input from the user. It also allows for very simple expansion of the number of filters being searched.
+
+### 6.3 Future Work
+
+As mentioned earlier, an index of the most effective filter combinations could be built up based on the estimated noise level of an image and it's percent of weak textures vs rich textures. This would allow for a quick selection of which filters(or filter if using one fits better) to use after the weak texture mask has been generated for the users image.
+
+Since the results show that there are improvements to be made from this, the area of applying different denoising filters based on meaningful sections of the image could be explored further. The nature of this method of selecting weak texture patches leads to inaccurate borders between contrasting texture types. Using edge detection and classifying each segment as weak/strong or in-between could prove more effective at preserving detail and edges.
+
+Lastly, since the project here focused on additive Gaussian white noise, other noise types could be investigeted. Other types of noise, such as poisson noise or quantization noise, can be quite common and require differant tyoes of filters to be used. 
 
 $$\pagebreak$$
 

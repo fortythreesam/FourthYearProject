@@ -1,3 +1,3 @@
 #!/bin/bash
-pandoc report.md -V fontsize=12pt -V geometry:margin=1.75in -o report.pdf
+pandoc report.md -V geometry:margin=1.75in -V fontsize=12pt -o report.pdf
 firefox ./report.pdf
