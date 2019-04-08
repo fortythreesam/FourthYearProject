@@ -1,0 +1,5 @@
+\package{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[CE,CO]{}
+\fancyfoot[CO,CE]{Sam Drugan}
+\fancyfoot[LE,RO]{\thepage}
