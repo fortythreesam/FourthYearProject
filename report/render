@@ -1,3 +1,3 @@
 #!/bin/bash
-pandoc report.md -V geometry:margin=1.7in -V toc-depth=4 -V fontsize=12pt -V linestretch=1.25 -V lof=true  --toc --template=template.latex  -o report.pdf
+pandoc report.md -V geometry:margin=1.6in -V toc-depth=4 -V fontsize=12pt -V linestretch=1.25 -V lof=true  --toc --template=template.latex  -o report.pdf
 firefox ./report.pdf

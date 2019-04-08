@@ -8,7 +8,7 @@ author:
     - University College Cork
     -  \ \ \ \ \ \ Department of Computer Science \ \ \ \ \ \ 
     - \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  
-    - Supervisor - John Mullane
+    - \textbf{Supervisor - John Mullane}
     - \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  
 date: April, 2019
 header-includes: |
@@ -104,13 +104,12 @@ One problem with using denoising filters is the fact that input parameters are r
 
 #### 1.1.3 Weak Texture Patches
 
-Another problem faced in denoising images is the presence of naturally noisy areas. One example of this, which can be seen in Fig 1.1. below, is a landscape where the grass and trees are naturally noisy but the sky is smooth. The naturally noisy areas are referred to as rich textures, weak textures refer to the smooth/flat areas.
+Another problem faced in denoising images is the presence of naturally noisy areas. One example of this, which can be seen in *Figure 1.* below, is a landscape where the grass and trees are naturally noisy but the sky is smooth. The naturally noisy areas are referred to as rich textures, weak textures refer to the smooth/flat areas.
 
 Images with these areas lose a considerable amount of their detail when a single filter is applied over them if the filter is too strong. On the other hand, if the filter is too weak, the smoother areas retain much of the noise. Dealing with rich/weak textured areas separately and then combining the results of the two could help address this issue.
 
-![Image showing a contrast between naturall noise and smooth textures](images/1.1.3.1.jpg)
+![Image containing a mixture of weak textures(eg. the sky) and rich textures/naturally noisy areas(eg. the grass)](images/1.1.3.1.jpg)
 
-*Fig 1.1. Image containing a mixture of weak textures(eg. the sky) and rich textures/naturally noisy areas(eg. the grass)*
 
 ### 1.2 Goals
 
@@ -167,9 +166,8 @@ A weakly textured patch in an image is found where a cluster of pixels contains 
 
 Liu, Xinhao, et al.[6] propose a method to estimate noise levels of additive white Gaussian noise by analysing weak texture patches in an image. They also show a method for generating a mask of the weak texture patches in an image. The method they propose analyses statistics from the gradient covariance matrix of each patch. The process looks for what is expected in a weak texture patch after a layer of noise has affected the image. It then estimates a threshold such that a patch is weakly textured if the maximum eigenvalue of its gradient covariance matrix falls below the threshold. This gives a matrix, with the same shape as the image, where there is a one at each position if that pixel is part of a weakly textured patch. The rest of the matrix contains zeros indicating the pixels that are part of richly textured patches. 
 
-![Figure showing three types of texture patches](images/2.1.3.1.png)
+![[6] Three examples of patches of different types. $s_2^1$ signifies the maximum eigenvalue of the gradient covarience matrix of each patch type](images/2.1.3.1.png)
 
-*Fig 2.1. [6] Three examples of patches of different types. $s_2^1$ signifies the maximum eigenvalue of the gradient covarience matrix of each patch type*
 
 ### 2.2 Evolutionary Algorithms (EA)
 
@@ -252,11 +250,13 @@ $$\pagebreak$$
 
 ### 3.1 Design Overview
 
-As shown in the previous section, the main design for this project is split across the various aspects required to build an EA. The bulk of the work will be in implementing the evaluate function. The student will use python and a number of supporting libraries in order to achieve this. Prior to the EA running, the image data set is generated.
+As shown in the previous section, the main design for this project is split across the various aspects required to build an EA. The bulk of the design will be in implementing the evaluate function. The student will use python and a number of supporting libraries in order to achieve this. Prior to the EA running, the image data set is generated.
 
 ### 3.2 Image Dataset
 
-The image data set is held in a custom object. It will maintain a copy of the original image, the noisy image and the weak texture patch mask. Since the generation of the weak texture patch also estimates the noise level it stores this as well to use when evaluating the result. It also provides functionality to reload the data set and set the level of noise that is applied. 
+The image data set is held in a custom object. It maintains a copy of the original image, the noisy image and the weak texture patch mask. Since the generation of the weak texture patch also estimates the noise level it stores this as well to use when evaluating the result.
+
+The class contains a single method. This method provides functionality for loading in a set of images and pre processing them. One argument is accepted, the number of images to be loaded. This image takes a random subset of the sample images and applies a layer of noise to them. Then it generates the weak texture masks and saves each item to the relevant class arrays.
 
 ### 3.3 The Evaluate Function
 
@@ -278,6 +278,10 @@ The image data set generated above retains the original, untouched, image. The d
 
 This project uses a simple tournament selection as a means to pick the individuals used in the crossover. Since individuals consist of two decisions, a single point crossover is used. For each pair of individuals, a new pair is created such that the first individual is made up from the first half of one parent, and the second half of the other. The second individual is then created using the remaining parts of the parents. As for the mutation step, each individual will have a 20% chance to have one of their bits flipped.
 
+### 3.5 Weak Texture Mask Generation
+
+There's not much to say in terms of the design for the weak texture mask generation. The student follows Liu, Xinhao, et al.'s[6] method. If a patch falls below the threshold for being a weak texture, a value of one is stored in that pixel to signal that it is a part of the weak texture mask. This allows for the use of element wise multiplication of matrices to extract the weak textures. Generating these masks also returns an estimated noise value which can be stored for future evaluation. For each image, the process must be run three times, once for each colour channel.
+
 
 $$\pagebreak$$
 
@@ -287,11 +291,11 @@ $$\pagebreak$$
 
 ### 4.1 Technologies Used
 
-The student chose to implement the bulk of his project in Python3. Pyhton3 has a lot of supporting libraries to aid in complex math, image processing and evolutionary algorithms. Its ease of use also allowed for quick prototyping and debugging. This project also uses a virtual environment to manage the various libraries and maintain a standard development environment across machines. Below is a list of the supporting libraries and a brief description of each one:
+The student chose to implement the bulk of his project in Python3. Pyhton3 has many supporting libraries to aid in complex math, image processing and evolutionary algorithms. Its ease of use also allowed for quick prototyping and debugging. This project also uses a virtual environment to manage the various libraries and maintain a standard development environment across machines. Below is a list of the supporting libraries and a brief description of each one:
 
 #### 4.1.1 Python Libraries
 
-- Numpy: A large library that provides access to N-dimensional arrays with many, fast, supporting functions. The images used in this project will be stored in numpy arrays. Numpy also contains many useful linear algebra functions which are used to extract the differant texture patches.
+- Numpy: A large library that provides access to N-dimensional arrays with many, fast, supporting functions. The images used in this project will be stored in numpy arrays. Numpy also contains various useful linear algebra functions which are used to extract the differant texture patches.
 - Scikit-Image: This library implements functions to achieve many common image processing tasks. The main ones this project will use are the denoising filters that were previously mentioned. Functions for getting statistics/analysis from images such as some of the previously mentioned evaluation function. 
 - MatPlotLib: Due to the nature of an image processing project, there is a lot of visual data at each stage. MatPlotLib allows for easy visualisation of data such as the images before and after, and the weak texture mask.
 
@@ -315,11 +319,10 @@ new_image = new_image[:,:,::-1]
 
 ### 4.3 Weak Texture Patches
 
-The implementation to generate the weak texture patch mask consisted mainly of following the method described by Liu, Xinhao, et al.[6] The functionality provided by Numpy allowed for easy access to complex linear algebra computations such as retrieving the eigenvalues of each patch's covariance matrices. Numpy also makes matrix manipulation simple with powerful indexing techniques and supporting functions. Similarly, Scikit-image provides the functionality required to analyse the patch's statistics such as retrieving the vertical and horizontal correlation of an image. Fig 4.1. shows an example output mask of this function on a noisy image.
+The implementation to generate the weak texture patch mask consisted mainly of following the method described by Liu, Xinhao, et al.[6] The functionality provided by Numpy allowed for easy access to complex linear algebra computations such as retrieving the eigenvalues of each patch's covariance matrices. Numpy also makes matrix manipulation simple with powerful indexing techniques and supporting functions. Similarly, Scikit-image provides the functionality required to analyse the patch's statistics such as retrieving the vertical and horizontal correlation of an image. *Figure 3.* shows an example output mask of this function on a noisy image.
 
-![A noisy image and its corresponding weak texture mask](images/4.3.1.png)
+![Example of a noisy image and its corresponding weak texture mask. Found using the implementation of the above method](images/4.3.1.png)
 
-*Fig 4.1. Example of a noisy image and its corresponding weak texture mask. Found using the implementation of the above method* 
 
 ### 4.4 Evaluation Function 
 
@@ -357,9 +360,7 @@ strong_texture = (denoised_img__rich - (denoised_img__rich * noisy_img__mask))
 denoised_img = weak_texture + strong_texture
 ```
 
-![Image that is split by its rich and weak textures](images/4.4.2.1.png)
-
-*Fig 4.2. An example of the separated texture types after having the denoising filter applied. Left shows the weak textures in the image while right shows the rich textures. Colour channels are split individually*
+![An example of the separated texture types after having the denoising filter applied. Left shows the weak textures in the image while right shows the rich textures. Colour channels are split individually](images/4.4.2.1.png)
 
 ### 4.5 Evolutionary Algorithm
 
@@ -413,19 +414,17 @@ $$\pagebreak$$
 
 ### 5.1 Evaluation Overview
 
-The evaluation of this project is split into two sections. First, the student ensures that the functions implemented such as the detection of weak texture patches. The student then evaluates the effectiveness of the method of denoising images described above. The problems encountered in using this method will be discussed as well as potential use cases or viability. 
+Evaluation of this project is split into two sections. First, the student discusses the process to ensure that the functions implemented, such as the detection of weak texture patches, are correct. The student then evaluates the effectiveness of the method of denoising images described above. At the end, the problems encountered in using this method will be discussed as well as potential use cases or viability. 
 
-As has been talked about before, the EA has been set up in a way in which it is easy to test a wide variety of circumstances. The student first reviews the results when running the EA with a fitness metric base on the RMSE. This is tested at various noise levels. The evaluation will depend on its performance in the other three areas compared to standard methods which will be described below.
+As has been mentioned before, the EA has been set up in a way in which it is easy to test a wide variety of circumstances. Initial tests review the results when running the EA with a fitness metric based on the RMSE and a varying level of noise. The evaluation will depend on its performance in the other three areas compared to standard methods which will be described below. Subsequent tests will check the effectiveness of using other performance metrics.
 
 ### 5.2 Function Assessment
 
 #### 5.2.1 Weak Texture Detection
 
-To assess the effectiveness of detecting weak texture patches, the student can compare the output mask to the human segmentation of the image, provided by the Berkely segmentation data set[8]. Displayed in *Fig 5.1.* is an example image, its weak texture mask, and the human segmentation. The sky in the image has been selected as a weak texture as shown by the mask. The contrast between the sky and the mountains below form a natural edge as the segmented image indicates. This is a sign that the method used here effectively detects weak texture patches. Sections not indicated as being segmented are also selected by the weak texture patch function. While these areas are part of a larger object, the area is still weakly textured due to a lack of lighting (the shadows) or a smoother (snow).
+To assess the effectiveness of detecting weak texture patches, the student can compare the output mask to the human segmentation of the image, provided by the Berkely segmentation data set[8]. Displayed in *Figure 5.* is an example image, its weak texture mask, and the human segmentation. The sky in the image has been selected as a weak texture as shown by the mask. The contrast between the sky and the mountains below form a natural edge as the segmented image indicates. This is a sign that the method used here effectively detects weak texture patches. Sections not indicated as being segmented are also selected by the weak texture patch function. While these areas are part of a larger object, the area is still weakly textured due to a lack of lighting (the shadows) or a smoother (snow).
 
-![Image and its weak texture mask compared to a human segmentation](images/5.2.1.1.jpg)
-
-*Fig 5.1. Test Image(Right) with a mask showing its weak testure patches(center) and a human segmentation of the image(left)*
+![Test Image(Right) with a mask showing its weak testure patches(center) and a human segmentation of the image(left)](images/5.2.1.1.jpg)
 
 Problem areas can be noted in a few sections, most notably the individual squares that have been selected as being a weak texture patch. This is due to the nature that the algorithm searches based on a set patch size(set to patches of 7x7 here). This is a case where a small area of the image has been identified as being part of a weak texture but the patches size is too large to capture this accurately. An issue arises then from using patch sizes that are too small as the detection threshold becomes easier to fall under. This results in choosing more patches for the weak texture mask which can cause even more of the same problem.
 
@@ -457,15 +456,14 @@ Input parameters for the first test:
 | ----------- | ---------- | ----------- | ------------------ |
 | 0.005       | 20         | 10          | RMSE               |
 
-![The various stages of an image being run through the the projects process](images/5.3.1.1.1.png)
+![Image used in Ea at various stages. Original Image (Top left), Weak Texture Mask (Top Right), Noisy Image(Bottom Left), Denoised Image(Bottom Right)](images/5.3.1.1.1.png){ width=450px }
 
-*Fig 5.2. Image used in Ea at various stages. Original Image (Top left), Weak Texture Mask (Top Right), Noisy Image(Bottom Left), Denoised Image(Bottom Right)*
 
 Results First Execution:
 
-| Filter For Weak Texture      | Filter For Rich Texture                |
-| ---------------------------- | -------------------------------------- |
-| Gaussian Blur with Sigma = 1 | Chambolle TV Filter with Weight = 0.04 |
+| Filter For Weak Texture   | Filter For Rich Texture             |
+| ------------------------- | ----------------------------------- |
+| Gaussian Blur - Sigma = 1 | Chambolle TV Filter - Weight = 0.04 |
 
 Image EA was run on:
 
@@ -511,10 +509,10 @@ From the results shown here, the EA chose a different filter to use on each text
 
 Other Executions:
 
-| Execution | Filter For Weak Texture        | Filter For Rich Texture                |
-| --------- | ------------------------------ | -------------------------------------- |
-| 2         | Gaussian Blur with Sigma = 1   | Gaussian Blur with Sigma = 1           |
-| 3         | Gaussian Blur with Sigma = 1.5 | Chambolle TV Filter with Weight = 0.04 |
+| Execution | Filter For Weak Texture     | Filter For Rich Texture             |
+| --------- | --------------------------- | ----------------------------------- |
+| 2         | Gaussian Blur - Sigma = 1   | Gaussian Blur - Sigma = 1           |
+| 3         | Gaussian Blur - Sigma = 1.5 | Chambolle TV Filter - Weight = 0.04 |
 
 
 In the second execution of the process under the above conditions, only one filter is used over the whole image. This shows that using separate filters on each texture type isn't always the most effective way to denoise an image. This still shows the effectiveness of using an EA to find which filter to use. There is an average improvement of 12.516240 in the RMSE and an increase of 0.337282 in the SSIM across all four images.
@@ -527,15 +525,15 @@ In the second execution of the process under the above conditions, only one filt
 
 Tests on higher levels of noise are carried out in order to see if it is still a viable option. One reason it might become less viable is due to the nature of weak texture patch selection becoming less accurate the higher the noise level.
 
-| Execution | Filter For Weak Texture                | Filter For Rich Texture                |
-| --------- | -------------------------------------- | -------------------------------------- |
-| 1         | Gaussian Blur with Sigma = 1           | Chambolle TV Filter with Weight = 0.05 |
-| 2         | Gaussian Blur with Sigma = 1.5         | Gaussian Blur with Sigma = 1.5         |
-| 3         | Chambolle TV Filter with Weight = 0.04 | Chambolle TV Filter with Weight = 0.05 |
+| Execution | Filter For Weak Texture             | Filter For Rich Texture             |
+| --------- | ----------------------------------- | ----------------------------------- |
+| 1         | Gaussian Blur - Sigma = 1           | Chambolle TV Filter - Weight = 0.05 |
+| 2         | Gaussian Blur - Sigma = 1.5         | Gaussian Blur - Sigma = 1.5         |
+| 3         | Chambolle TV Filter - Weight = 0.04 | Chambolle TV Filter - Weight = 0.05 |
 
 | Average Improvement | RMSE      | PSNR    | IQI      | SSIM     |
-| -------------------- | --------- | ------- | -------- | -------- |
-|                      | 18.674547 | 5.13726 | 0.005993 | 0.216856 |
+| ------------------- | --------- | ------- | -------- | -------- |
+|                     | 18.674547 | 5.13726 | 0.005993 | 0.216856 |
 
 Again, one of the executions under these circumstances produced a result where a single filter worked best. Execution number one shows the first problem with EA's. The result of using just the rich texture filter performed better in all metrics on the image used in the EA. This shows the optimal solution was not found. Interestingly, the rich texture filter on its own did not perform better on all unseen test images. The metrics for this project's method fell in between the results of the two filters, with one or the other achieving better results. 
 
@@ -547,15 +545,14 @@ Again, one of the executions under these circumstances produced a result where a
 
 The noise applied here is quite extreme and is unlikely to occur naturally. The weak texture becomes rather ambiguous here and causes much more of the image to fall below the threshold required to be selected as a weak texture patch.
 
-![Image with high level of noise](images/5.3.1.3.1.png)
+![Image with high level of noise used in third test](images/5.3.1.3.1.png)
 
-*Fig 5.3. Noisy image used in this test*
 
-| Execution | Filter For Weak Texture                | Filter For Rich Texture                |
-| --------- | -------------------------------------- | -------------------------------------- |
-| 1         | Chambolle TV Filter with Weight = 0.06 | Chambolle TV Filter with Weight = 0.06 |
-| 2         | Gaussian Blur with Sigma = 1           | Chambolle TV Filter with Weight = 0.05 |
-| 3         | Gaussian Blur with Sigma = 1.5         | Gaussian Blur with Sigma = 1.5         |
+| Execution | Filter For Weak Texture             | Filter For Rich Texture             |
+| --------- | ----------------------------------- | ----------------------------------- |
+| 1         | Chambolle TV Filter - Weight = 0.06 | Chambolle TV Filter - Weight = 0.06 |
+| 2         | Gaussian Blur - Sigma = 1           | Chambolle TV Filter - Weight = 0.05 |
+| 3         | Gaussian Blur - Sigma = 1.5         | Gaussian Blur - Sigma = 1.5         |
 
 | Average Improvement: | RMSE      | PSNR     | IQI       | SSIM     |
 | -------------------- | --------- | -------- | --------- | -------- |
@@ -571,11 +568,11 @@ This is the final test in which the student modifies the noise level. Here they 
 | ----------- | ---------- | ----------- | ------------------ |
 | 0.001       | 20         | 10          | RMSE               |
 
-| Execution | Filter For Weak Texture                | Filter For Rich Texture                |
-| --------- | -------------------------------------- | -------------------------------------- |
-| 1         | Gaussian Blur with Sigma = 1           | Gaussian Blur with Sigma = 0.5         |
-| 2         | Gaussian Blur with Sigma = 1           | Gaussian Blur with Sigma = 0.5         |
-| 3         | Chambolle TV Filter with Weight = 0.02 | Chambolle TV Filter with Weight = 0.01 |
+| Execution | Filter For Weak Texture             | Filter For Rich Texture             |
+| --------- | ----------------------------------- | ----------------------------------- |
+| 1         | Gaussian Blur - Sigma = 1           | Gaussian Blur - Sigma = 0.5         |
+| 2         | Gaussian Blur - Sigma = 1           | Gaussian Blur - Sigma = 0.5         |
+| 3         | Chambolle TV Filter - Weight = 0.02 | Chambolle TV Filter - Weight = 0.01 |
 
 
 | Average Improvement: | RMSE     | PSNR      | IQI      | SSIM     |
@@ -584,9 +581,8 @@ This is the final test in which the student modifies the noise level. Here they 
 
 Around this noise level is where the student's method of denoising performs best. In nine out of the twelve test images, the method described here performed better in all of the above metrics. The main reason the method works well here is that the weak texture patch selection process can work much more accurately which leads to a more meaningful denoising process. Compared to the first test, even the SSIM of the denoised images here are scoring better than when using a single filter.
 
-![A noisy image and its denoised counterpart using method described in this project](images/5.3.1.4.1.png)
+![Noisy Image(Right), Denoised Image using the students method(Left)](images/5.3.1.4.1.png)
 
-*Fig 5.4. Noisy Image(Right), Denoised Image using the students method(Left)* 
 
 ##### 5.3.1.5 Fifth Test 
 
@@ -596,11 +592,11 @@ This, and the next two, tests check to see if any improvements are made when usi
 | ----------- | ---------- | ----------- | ------------------ |
 | 0.005       | 20         | 10          | PSNR               |
 
-| Execution | Filter For Weak Texture        | Filter For Rich Texture                |
-| --------- | ------------------------------ | -------------------------------------- |
-| 1         | Gaussian Blur with Sigma = 1.5 | Chambolle TV Filter with Weight = 0.04 |
-| 2         | Gaussian Blur with Sigma = 1   | Chambolle TV Filter with Weight = 0.03 |
-| 3         | Gaussian Blur with Sigma = 1   | Chambolle TV Filter with Weight = 0.03 |
+| Execution | Filter For Weak Texture     | Filter For Rich Texture             |
+| --------- | --------------------------- | ----------------------------------- |
+| 1         | Gaussian Blur - Sigma = 1.5 | Chambolle TV Filter - Weight = 0.04 |
+| 2         | Gaussian Blur - Sigma = 1   | Chambolle TV Filter - Weight = 0.03 |
+| 3         | Gaussian Blur - Sigma = 1   | Chambolle TV Filter - Weight = 0.03 |
 
 | Average Improvement: | RMSE      | PSNR     | IQI      | SSIM    |
 | -------------------- | --------- | -------- | -------- | ------- |
@@ -616,11 +612,11 @@ Here the student is testing to see if using the IQI as the fitness metric has an
 | ----------- | ---------- | ----------- | ------------------ |
 | 0.005       | 20         | 10          | IQI                |
 
-| Execution | Filter For Weak Texture                | Filter For Rich Texture                |
-| --------- | -------------------------------------- | -------------------------------------- |
-| 1         | Gaussian Blur with Sigma = 1.5         | Chambolle TV Filter with Weight = 0.04 |
-| 2         | Chambolle TV Filter with Weight = 0.03 | Chambolle TV Filter with Weight = 0.04 |
-| 3         | Gaussian Blur with Sigma = 1           | Chambolle TV Filter with Weight = 0.03 |
+| Execution | Filter For Weak Texture             | Filter For Rich Texture             |
+| --------- | ----------------------------------- | ----------------------------------- |
+| 1         | Gaussian Blur - Sigma = 1.5         | Chambolle TV Filter - Weight = 0.04 |
+| 2         | Chambolle TV Filter - Weight = 0.03 | Chambolle TV Filter - Weight = 0.04 |
+| 3         | Gaussian Blur - Sigma = 1           | Chambolle TV Filter - Weight = 0.03 |
 
 | Average Improvement: | RMSE     | PSNR     | IQI     | SSIM     |
 | -------------------- | -------- | -------- | ------- | -------- |
@@ -636,11 +632,11 @@ In this test, the EA optimizes the result towards the SSIM. As seen in the first
 | ----------- | ---------- | ----------- | ------------------ |
 | 0.005       | 20         | 10          | SSIM               |
 
-| Execution | Filter For Weak Texture                | Filter For Rich Texture                |
-| --------- | -------------------------------------- | -------------------------------------- |
-| 1         | Chambolle TV Filter with Weight = 0.04 | Chambolle TV Filter with Weight = 0.03 |
-| 2         | Chambolle TV Filter with Weight = 0.05 | Chambolle TV Filter with Weight = 0.05 |
-| 3         | Gaussian Blur with Sigma = 3           | Gaussian Blur with Sigma = 1           |
+| Execution | Filter For Weak Texture             | Filter For Rich Texture             |
+| --------- | ----------------------------------- | ----------------------------------- |
+| 1         | Chambolle TV Filter - Weight = 0.04 | Chambolle TV Filter - Weight = 0.03 |
+| 2         | Chambolle TV Filter - Weight = 0.05 | Chambolle TV Filter - Weight = 0.05 |
+| 3         | Gaussian Blur - Sigma = 3           | Gaussian Blur - Sigma = 1           |
 
 | Average Improvement: | RMSE     | PSNR     | IQI      | SSIM     |
 | -------------------- | -------- | -------- | -------- | -------- |
@@ -660,7 +656,7 @@ Another issue in the way of finding a pair of filters to use is that the results
 
 Since each individual applies two filters to the noisy image in each generation, the run time of the EA can grow quite large. This is especially the case when the filter list grows and more generations/population are required to find an optimal solution. This run-time is unfeasible for such a minor component of image processing. The computation time for finding the weak/rich textures in an image also grows more expensive when the image size increases which will be more common as better cameras become more affordable and the average resolution increases. 
 
-In regard to the EA, if it is not given enough time(not enough generations/population) then a sub-optimal solution will be returned. This can lead to two different filters being used when a single filter would have been more optimal. The solution to this problem then contributes back to the aforementioned problem of large run-times. 
+In regard to the EA, if it is not given enough time(not enough generations/population) then a sub-optimal solution could be returned. This can lead to two different filters being used when a single filter would have been more optimal. The solution to this problem then contributes back to the aforementioned problem of large run-times. 
 
 ### 5.5 Use Cases/Viability
   
@@ -688,7 +684,7 @@ As mentioned earlier, an index of the most effective filter combinations could b
 
 Since the results show that there are improvements to be made from this, the area of applying different denoising filters based on meaningful sections of the image could be explored further. The nature of this method of selecting weak texture patches leads to inaccurate borders between contrasting texture types. Using edge detection and classifying each segment as weak/strong or in-between could prove more effective at preserving detail and edges.
 
-Lastly, since the project here focused on additive Gaussian white noise, other noise types could be investigated. Other types of noise, such as Poisson noise or quantization noise, can be quite common and require different types of filters to be used. 
+Lastly, since the project here focused on additive Gaussian white noise, other noise types could be investigated. Other types of noise, such as Poisson noise or quantization noise, can be quite common and require different types of filters to be used. For other noise types to be worked on further, thee weak texture selection process would need to be revised as it's based on the assumption that the image has been corrupted by Gaussian white noise
 
 $$\pagebreak$$
 
