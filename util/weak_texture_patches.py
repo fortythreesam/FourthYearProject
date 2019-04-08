@@ -3,18 +3,13 @@ import scipy
 import math
 from skimage.util import view_as_windows as viewW
 
-def im2col(a, block_size, stepsize=1):
-    M,N = a.shape
-    col_extent = N - block_size[1] + 1
-    row_extent = M - block_size[0] + 1
-
-    start_idx = numpy.arange(block_size[0])[:,None]*N + numpy.arange(block_size[1])
-
-    offset_idx = numpy.arange(row_extent)[:,None]*N + numpy.arange(col_extent)
-
-    return numpy.take(a,start_idx.ravel()[:,None] + offset_idx.ravel()[::stepsize])
 
 """
+takes in an image and returns the estimated guassian white noise levels 
+for each colour channel in an image. It also outpurs the threshold for 
+which weak texture patches must fall under and the number of weak texture
+patches in each channel.
+
 Output params:
 nlevel: estimated noise level
 th: threshold to extract weak texture patches at the last iteration
@@ -100,6 +95,9 @@ def noise_level(img, patchsize = 7, decim = 0, conf = None, itr = 3):
     
     return nlevel, th, num
             
+"""
+Generates a convolution matrix based on the given kernal H and the dimensions m and n
+"""
 def my_convmtx(H, m, n):
     s = H.shape
     T = numpy.zeros((((m-s[0]+1)*(n-s[1]+1)), (m*n)), float)
@@ -116,6 +114,9 @@ def my_convmtx(H, m, n):
     
         
 """
+Takes in an image and the threshold calculated by noise_level and returns a 
+mask of the weak texture patch
+
 Output parameters:
 msk: weak texture mask. 0 and 1 represent non-weak-texture and weak-texture
      respectively
@@ -156,3 +157,18 @@ def weak_texture_mask(img, th, patchsize=7):
                     msk[col:col+patchsize,row:row+patchsize, cha] = 1
                 ind += 1
     return msk
+
+
+"""
+Takes in an image and a block size and rearranges the blocks into collumns
+"""
+def im2col(a, block_size, stepsize=1):
+    M,N = a.shape
+    col_extent = N - block_size[1] + 1
+    row_extent = M - block_size[0] + 1
+
+    start_idx = numpy.arange(block_size[0])[:,None]*N + numpy.arange(block_size[1])
+
+    offset_idx = numpy.arange(row_extent)[:,None]*N + numpy.arange(col_extent)
+
+    return numpy.take(a,start_idx.ravel()[:,None] + offset_idx.ravel()[::stepsize])

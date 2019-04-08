@@ -10,8 +10,10 @@ from util import performance_functions
 from util.image_dataset import ImageDataset
 importlib.reload(performance_functions) 
 
+"""
+Takes in an image and an action id and applies a denoising filter based on the action id
+"""
 def denoise_image(image, action_id):
-    
     psf = numpy.ones((5, 5, 3)) / 25
     denoising_filters = [
         lambda x : (filters.gaussian(x ,sigma=0.05)*255),
@@ -35,14 +37,27 @@ def denoise_image(image, action_id):
         return image
     return denoising_filters[action_id](image)
 
+"""
+converts a list of bits to an int
+"""
 def bits_to_int(bit_list):
     return sum([(x*(2**i)) for i, x in enumerate(bit_list[::-1])])
 
+"""
+takes in an image and its weak texture mask and returns the two 
+textures seperately
+"""
 def extract_textures(image, weak_texture_mask):
     weak_texture = (image * weak_texture_mask)
     strong_texture = image - weak_texture
     return strong_texture, weak_texture
 
+
+"""
+Takes in an individual and the images dataset. It converts the individual into
+actions and applies the apply_action function. It then extracts the 2 texture
+types and recombines them
+"""
 def excecute_actions(individual, images, image_index = 0):
     weak_texture_action = bits_to_int(individual[0:len(individual)//2])
     strong_texture_action = bits_to_int(individual[len(individual)//2:len(individual)])
@@ -56,6 +71,12 @@ def excecute_actions(individual, images, image_index = 0):
     
     return (strong_texture + weak_texture ) 
 
+"""
+A higher order function that will be passed into the ea. Takes in an 
+individual and an image data set. It calls the denoising function and 
+and returns a result based on the given performance function. If display
+is set to true it shows the base image, noisy image and the denoised image.
+"""
 def evaluate(individual, images ,display=False, image_index = 0, performance = performance_functions.root_mean_squared_error): 
     
     denoised_image = excecute_actions(individual, images, image_index)
@@ -73,9 +94,19 @@ def evaluate(individual, images ,display=False, image_index = 0, performance = p
                                                    
     return performance(denoised_image, images.base_images[image_index]),
 
+
+"""
+Function to denoise an image using an individual after the EA has run
+"""
 def get_denoised_image(individual, images , image_index):
     return excecute_actions(individual, images, image_index)
 
+
+"""
+A function that contains the whole EA. Takes in a set of parameters defining
+the conditions under which the EA runs. It forms the EA and returns the best
+individual.
+"""
 def run_ea(noise_level = 0.005, pop = 20, generations = 10, evaluation_method = "RMSE", num_other_images = 4, display = False):
     
     images = ImageDataset(num_other_images ,noise_level)
@@ -116,6 +147,11 @@ def run_ea(noise_level = 0.005, pop = 20, generations = 10, evaluation_method = 
     print(evaluate(tools.selBest(pop, k=1)[0], images, display))
     return tools.selBest(pop, k=1)[0], images, noise_level
 
+"""
+This function takes an individual and an image data set and evaluates the 
+individual on all images in the dataset. Will display the images if display
+is set
+"""
 def compare_results(individual, images, noise_level, display = False):
     for i in range(0,len(images.base_images)):  
         if i == 0:
@@ -151,7 +187,10 @@ def compare_results(individual, images, noise_level, display = False):
         print("Standard Gaussian Blur Statistics:", end=" ")
         print_statistics(images.base_images[i], (denoised_image_gaussian_blur * 255))
         
-        
+"""
+prints out the four metrics based on the input image and the image 
+being evaluated
+"""
 def print_statistics(image, evaluation_image):
         print("RMSE: %f | PSNR: %f | IQI: %f | SSIM: %f" % \
              (performance_functions.root_mean_squared_error(evaluation_image, image),\

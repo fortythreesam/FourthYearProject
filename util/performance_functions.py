@@ -2,26 +2,26 @@ import numpy
 import math
 from skimage.measure import compare_psnr, compare_ssim
 """
-Mean Squared Error
+Returns the Mean Squared Error of two images
 """
 def mean_squared_error(im1, im2):
 
     return ((im1 - im2)**2).sum()/(im1.shape[0]*im1.shape[1])
 
 """
-Root Mean Squared Error
+Returns the Root Mean Squared Error of two images
 """
 def root_mean_squared_error(im1, im2):
     return math.sqrt(mean_squared_error(im1, im2))
 
 """
-Peak Signal to Noise Ratio
+Returns the Peak Signal to Noise Ratio of two images
 """
 def peak_signal_noise_ratio(im1, im2):
     return compare_psnr(im2, im1)
 
 """
-Image quality index
+returns the Image quality index of two images
 """
 def image_quality_index(im1, im2):
     im1_hat = a_hat(im1)
@@ -39,7 +39,7 @@ def omega(x1, x2):
     return numpy.sum(((x1-x1_hat)*(x2-x2_hat)))/(N-1)
 
 """
-Structural similarity index (SSIM)
+returns the Structural similarity index (SSIM)  of two images
 """
 def structural_similarity_indix(im1, im2):
     return compare_ssim(im1, im2, multichannel=True)

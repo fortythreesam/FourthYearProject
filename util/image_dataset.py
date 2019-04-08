@@ -4,6 +4,10 @@ import cv2 as cv
 import random
 from util.weak_texture_patches import noise_level, weak_texture_mask
 from skimage.util import random_noise
+
+"""
+Class to pre process a data set to use during the execution of the ea.
+"""
 class ImageDataset:
     
     def __init__(self, size, sigma=0.0002):
@@ -16,7 +20,11 @@ class ImageDataset:
         self.sigma = sigma
         self.load_files(size)
         
-        
+    """
+    Loads a given number of files and appllies a layer of noise to each one. 
+    Then generates the weak texture mask for each noisy image. Finally it stores 
+    the estimated noise level as well.
+    """
     def load_files(self, size):
         self.base_images = []
         numbers_used = []
